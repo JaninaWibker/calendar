@@ -1,0 +1,281 @@
+html, body {
+  padding: 0px;
+  margin: 0px;
+}
+
+body {
+  position: relative;
+  /*max-width: 500px;
+  max-height: 900px;*/
+}
+
+.header {
+  position: fixed;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 48px;
+  background-color: #9C27B0;
+}
+
+.header-menu-icon {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  top: 6px;
+  left: 6px;
+  color: white;
+  box-sizing: border-box;
+  padding: 6px;
+  cursor: pointer;
+}
+
+.header-menu-icon:hover {
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 50%;
+}
+
+.header-section {
+  position: relative;
+  display: inline;
+  float: right;
+  font-size: 18px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  line-height: 48px;
+  top: -36px;
+  right: 20px;
+}
+
+.nav-container {
+  position: fixed;
+  z-index: 2;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  transform: translateX(0);
+
+
+}
+.nav {
+  position: relative;
+  height: 100%;
+  width: 70%;
+  background-color: white;
+}
+
+.nav-close {
+  position: relative;
+  float: right;
+  color: white;
+  top: 6px;
+  right: 6px;
+  width: 36px;
+  height: 36px;
+  padding: 6px;
+  z-index: 4;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+
+.nav-close:hover {
+  background-color: rgba(255,255,255,0.2);
+  border-radius: 50%;
+}
+
+.nav-header-img {
+  position: relative;
+  width: 100%;
+  z-index: 2;
+  height: 48px;
+  background-image: url("../img/menu-title.jpeg");
+  background-size: cover;
+}
+
+.nav-header-title {
+  position: relative;
+  width: 100%;
+  height: 48px;
+  top: -48px;
+  background-color: rgba(0,0,0,0.4);
+  color: white;
+  line-height: 48px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 18px;
+  padding-left: 10px;
+  box-sizing: border-box;
+  z-index: 3;
+}
+
+.hidden {
+  transform: translateX(-100%);
+  transition: 1s ease-in-out;
+}
+
+.nav-items {
+  position: relative;
+  top: -48px;
+}
+
+.nav-item {
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  height: 48px;
+  line-height: 48px;
+  font-family: 'Roboto', sans-serif;
+
+  padding-left: 12px;
+}
+
+.nav-item:hover {
+  background-color: rgba(0,0,0,0.2)
+}
+
+.main {
+  position: relative;
+  z-index: 0;
+  top: 48px;
+  font-family: 'Roboto', sans-serif;
+  max-height: calc(100vh - 48px);
+  overflow-y: scroll;
+}
+
+.day-view {
+}
+
+.day-container {
+
+}
+
+.day-time {
+  position: relative;
+  display: inline-block;
+  color: rgba(0,0,0,0.4);
+  font-family: 'Roboto', sans-serif;
+  line-height: 48px;
+  width: 42px;
+  left: 6px;
+}
+
+.day-event{
+  position: relative;
+  display: inline-block;
+  width: calc(100% - 48px - 24px);
+  left: 12px;
+  top: -4px;
+}
+
+.day-event[event=false]{
+  height: 1px;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.day-event[event=true]{
+  top: 6px;
+  height: 24px;
+  background-color: #7B1FA2;
+  color: white;
+  border-radius: 3px;
+  box-sizing: border-box;
+  padding: 2px 4px;
+  word-wrap: normal;
+  overflow-y: hidden;
+}
+
+.btn-container {
+  position: fixed;
+
+}
+
+.btn-fab {
+  position: fixed;
+  bottom: 12px;
+  padding: 12px;
+  background-color: white;
+  border-radius: 50%;
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+  color: white;
+  background-color: #9C27B0;
+  user-select: none;
+}
+
+.btn-previous {
+  left: calc((100vw / 6) * 1 - 24px);
+}
+
+.btn-next {
+  left: calc((100vw / 6) * 3 - 24px);
+}
+
+.btn-add {
+  left: calc((100vw / 6) * 5 - 24px);
+  background-color: #E91E63;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  height: 48px;
+  width: calc(100% / 7);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+
+td[week_date] {
+  text-align: center;
+  height: 48px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+td[week_date]:hover {
+  background-color: #E1BEE7;
+  color: white;
+}
+
+td[event=true] {
+  font-size: 10px;
+  text-align: center;
+}
+.event-badge {
+  background-color: #7B1FA2;
+  border-radius: 3px;
+  color: white;
+  margin: 4px 0;
+  word-wrap: break-word;
+}
+
+.isWeek > td[is_today=true]::before {
+  content: "";
+  position: relative;
+  display: block;
+  width: calc(100% + 2px);
+  top: -16px;
+  left: -1px;
+  height: 4px;
+  margin-bottom: -4px;
+  background-color: #4A148C;
+}
+
+.month-item {
+  height: 48px;
+  width: 48px;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 2;
+}
+
+.month-row > td[is_today=true] {
+  background-color: #9C27B0;
+  color: white;
+}
+
+td:empty {
+  visibility: hidden;
+}
