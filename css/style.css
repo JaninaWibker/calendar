@@ -234,7 +234,7 @@ td[week_date] {
   border-bottom: 1px solid rgba(0, 0, 0, 0.4);
 }
 
-td[week_date]:hover {
+td[week_date]:hover, td.month-item:hover {
   background-color: #E1BEE7;
   color: white;
 }
@@ -278,4 +278,13 @@ td[event=true] {
 
 td:empty {
   visibility: hidden;
+}
+
+.add_menu {
+  position: relative;
+  display: block;
+  width: calc(100vw - 20px);
+  top: 10vh;
+  left: 10px;
+  z-index: 3
 }

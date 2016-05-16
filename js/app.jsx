@@ -221,6 +221,13 @@ let components = {
         <div class="btn-add btn-fab" onclick="interaction().add()"><i class="material-icons">add</i></div>
       </div>
     )
+  },
+  add_screen: (state) => {
+    let add_menu = (
+      <div class="add_menu">
+
+      </div>
+    )
   }
 }
 
