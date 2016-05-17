@@ -78,7 +78,11 @@ let components = {
       view = components.month_tree(state)
     }
     return (
-      <div class="main">{view}</div>
+      <div class="main">
+        {components.day_tree(state)}
+        {components.week_tree(state)}
+        {components.month_tree(state)}
+      </div>
     )
   },
   main_tree: (state) => {
@@ -88,7 +92,6 @@ let components = {
         {components.nav_tree(state)}
         {components.view_tree(state)}
         {components.buttons()}
-
       </div>
     )
   },
@@ -107,7 +110,7 @@ let components = {
       }
       children.push(<div class="day-container"><div class="day-time">{_i}:00</div><div class="day-event" event={_event}>{_title}</div></div>)
     }
-    return {'tag': 'div', 'prop': {'class': 'day-view'}, 'children': children}
+    return {'tag': 'div', 'prop': {'class': 'day-view ', 'hide': (state.view === 0 || state.view === 3) ? false : true}, 'children': children}
   },
   week_tree: (state) => {
     let date = new Date(state.date.year, state.date.month, state.date.day)
@@ -140,7 +143,7 @@ let components = {
       titles.push({'tag': 'div', 'children': title})
     }
     return (
-      <div class="week-view">
+      <div class={"week-view "} hide={(state.view === 1) ? false : true}>
         <table>
           <tr>
             <th>M</th>
@@ -197,7 +200,7 @@ let components = {
     }
     let m_data = {'tag': 'table', 'prop': {'class': ''}, 'children': obj}
     return (
-      <div class="month-view">
+      <div class="month-view" hide={(state.view === 2) ? false : true}>
         <table>
           <tr>
             <th>M</th>
@@ -377,10 +380,22 @@ let sortEvents = () => {
   })
   store().change('state', state)
 }
+let oldRenderTree
+let newRenderTree
+let renderTarget = $('body')[0]
+
 let render = (state) => {
-  $('body')[0].replaceChild(kalista().render(components.main_tree(state)), $('body')[0].firstChild)
+  oldRenderTree = components.main_tree(state)
+  renderTarget.replaceChild(kalista().render(oldRenderTree), renderTarget.firstChild)
+}
+let diff = (state) => {
+  newRenderTree = components.main_tree(state)
+  console.log(oldRenderTree)
+  kalista().diff(oldRenderTree, newRenderTree, '', 0, renderTarget.firstChild)
+  oldRenderTree = newRenderTree
 }
 $('.header')[0].remove()
 sortEvents()
-store().subscribe('state', render)
 render(store().get('state'))
+
+store().subscribe('state', diff)

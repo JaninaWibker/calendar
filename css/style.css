@@ -112,6 +112,10 @@ body {
   transition: 1s ease-in-out;
 }
 
+[hide=true] {
+  display: none;
+}
+
 .nav-items {
   position: relative;
   top: -48px;

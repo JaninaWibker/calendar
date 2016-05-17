@@ -44,6 +44,8 @@ let kalista = () => {
     diff: function(a, b, path, n, el) {
     if(!Array.isArray(a.children)) { a.children = []}
     if(!Array.isArray(b.children)) { b.children = []}
+    if(a.prop == null){a.prop = {}}
+    if(b.prop == null){b.prop = {}}
     let same = true
     if(path === ''){
       path = a.tag + ':nth-child(' + (n + 1) + ')'
@@ -80,7 +82,7 @@ let kalista = () => {
       }
       if(a.children.length === b.children.length){
         for(let i=0;i<a.children.length;i++){
-          if(!kalista().diff(a.children[i], b.children[i], path, i)){
+          if(!kalista().diff(a.children[i], b.children[i], path, i, el)){
             same = false
           }
         }
@@ -88,7 +90,7 @@ let kalista = () => {
         if(a.children.length > b.children.length){
           for(let i=0;i<a.children.length;i++){
             if(b.children[i]){
-              if(!kalista().diff(a.children[i], b.children[i], path, i)){
+              if(!kalista().diff(a.children[i], b.children[i], path, i, el)){
                 same = false
               }
             } else {
@@ -98,7 +100,7 @@ let kalista = () => {
         } else if(b.children.length > a.children.length){
           for(let i=0;i<b.children.length;i++){
             if(a.children[i]){
-              if(!kalista().diff(a.children[i], b.children[i], path, i)){
+              if(!kalista().diff(a.children[i], b.children[i], path, i, el)){
                 same = false
               }
             } else {

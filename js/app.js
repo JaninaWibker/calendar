@@ -99,7 +99,9 @@ let components = {
     return kalista().dom(
       'div',
       { 'class': 'main' },
-      view
+      components.day_tree(state),
+      components.week_tree(state),
+      components.month_tree(state)
     );
   },
   main_tree: state => {
@@ -144,7 +146,7 @@ let components = {
         )
       ));
     }
-    return { 'tag': 'div', 'prop': { 'class': 'day-view' }, 'children': children };
+    return { 'tag': 'div', 'prop': { 'class': 'day-view ', 'hide': state.view === 0 || state.view === 3 ? false : true }, 'children': children };
   },
   week_tree: state => {
     let date = new Date(state.date.year, state.date.month, state.date.day);
@@ -173,7 +175,7 @@ let components = {
     }
     return kalista().dom(
       'div',
-      { 'class': 'week-view' },
+      { 'class': "week-view ", hide: state.view === 1 ? false : true },
       kalista().dom(
         'table',
         null,
@@ -326,7 +328,7 @@ let components = {
     let m_data = { 'tag': 'table', 'prop': { 'class': '' }, 'children': obj };
     return kalista().dom(
       'div',
-      { 'class': 'month-view' },
+      { 'class': 'month-view', hide: state.view === 2 ? false : true },
       kalista().dom(
         'table',
         null,
@@ -405,6 +407,9 @@ let components = {
         )
       )
     );
+  },
+  add_screen: state => {
+    let add_menu = kalista().dom('div', { 'class': 'add_menu' });
   }
 };
 
@@ -562,10 +567,22 @@ let sortEvents = () => {
   });
   store().change('state', state);
 };
+let oldRenderTree;
+let newRenderTree;
+let renderTarget = $('body')[0];
+
 let render = state => {
-  $('body')[0].replaceChild(kalista().render(components.main_tree(state)), $('body')[0].firstChild);
+  oldRenderTree = components.main_tree(state);
+  renderTarget.replaceChild(kalista().render(oldRenderTree), renderTarget.firstChild);
+};
+let diff = state => {
+  newRenderTree = components.main_tree(state);
+  console.log(oldRenderTree);
+  kalista().diff(oldRenderTree, newRenderTree, '', 0, renderTarget.firstChild);
+  oldRenderTree = newRenderTree;
 };
 $('.header')[0].remove();
 sortEvents();
-store().subscribe('state', render);
 render(store().get('state'));
+
+store().subscribe('state', diff);
