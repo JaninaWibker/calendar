@@ -40,6 +40,74 @@ let kalista = () => {
         }
       }
       return el;
+    },
+    diff: function(a, b, path, n, el) {
+    if(!Array.isArray(a.children)) { a.children = []}
+    if(!Array.isArray(b.children)) { b.children = []}
+    let same = true
+    if(path === ''){
+      path = a.tag + ':nth-child(' + (n + 1) + ')'
+    } else {
+      path = path + ' ' + a.tag + ':nth-child(' + (n + 1) + ')'
+    }
+    if(a.tag === b.tag){ //same tag
+      if(keys(a.prop).length !== keys(b.prop).length){ //uneven amount of properties
+        console.log('uneven amount of properties', path)
+        if(keys(a.prop).length > keys(b.prop).length){
+          for(let i=0;i<keys(a.prop).length;i++){
+            if(keys(b.prop)[i] == undefined){
+              console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', path)
+            } else if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(b.prop)[i]){
+              console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', path)
+            }
+          }
+        } else if(keys(a.prop).length < keys(b.prop).length){
+          for(let i=0;i<(keys(b.prop).length - keys(a.prop).length);i++){
+            console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', path)
+          }
+        }
+        same = false
+      }
+      for(let i=0;i<keys(a.prop).length;i++){
+        if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(a.prop)[i]){
+          console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', path)
+          same = false
+        }
+      }
+      if(a.children.length === b.children.length){
+        for(let i=0;i<a.children.length;i++){
+          if(!kalista().diff(a.children[i], b.children[i], path, i)){
+            same = false
+          }
+        }
+      } else {
+        if(a.children.length > b.children.length){
+          for(let i=0;i<a.children.length;i++){
+            if(b.children[i]){
+              if(!kalista().diff(a.children[i], b.children[i], path, i)){
+                same = false
+              }
+            } else {
+              console.log('remove child node at ' + path , a.children[i])
+            }
+          }
+        } else if(b.children.length > a.children.length){
+          for(let i=0;i<b.children.length;i++){
+            if(a.children[i]){
+              if(!kalista().diff(a.children[i], b.children[i], path, i)){
+                same = false
+              }
+            } else {
+              console.log('add child(s) node at ' + path , b.children[i])
+            }
+          }
+        }
+      }
+    } else {
+      console.log('wrong tag: "' + a.tag + '" and "' + b.tag + '"', path)
+      same = false
+    }
+    return same
     }
   }
 }
