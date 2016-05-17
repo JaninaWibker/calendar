@@ -50,20 +50,23 @@ let kalista = () => {
     } else {
       path = path + ' ' + a.tag + ':nth-child(' + (n + 1) + ')'
     }
-    if(a.tag === b.tag){ //same tag
-      if(keys(a.prop).length !== keys(b.prop).length){ //uneven amount of properties
+    if(a.tag === b.tag){
+      if(keys(a.prop).length !== keys(b.prop).length){
         console.log('uneven amount of properties', path)
         if(keys(a.prop).length > keys(b.prop).length){
           for(let i=0;i<keys(a.prop).length;i++){
             if(keys(b.prop)[i] == undefined){
               console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', path)
+              el.querySelector(path).removeAttribute(keys(a.prop)[i])
             } else if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(b.prop)[i]){
               console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', path)
+              el.querySelector(path).setAttribute(keys(a.prop)[i], key(a.prop, i))
             }
           }
         } else if(keys(a.prop).length < keys(b.prop).length){
           for(let i=0;i<(keys(b.prop).length - keys(a.prop).length);i++){
             console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', path)
+            el.querySelector(path).setAttribute(keys(b.prop)[i+keys(a.prop).length], key(b.prop, i+keys(a.prop).length))
           }
         }
         same = false
@@ -71,6 +74,7 @@ let kalista = () => {
       for(let i=0;i<keys(a.prop).length;i++){
         if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(a.prop)[i]){
           console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', path)
+          el.querySelector(path).setAttribute(keys(a.prop)[i], key(a.prop, i))
           same = false
         }
       }
@@ -137,6 +141,6 @@ let store = () => {
   }
 }
 
-let $ = (query) => {
-  return document.querySelectorAll(query)
-}
+let $ = (query, i) => i ? document.querySelectorAll(query)[i] : document.querySelectorAll(query)
+let key = (obj, i) => obj[Object.keys(obj)[i]]
+let keys = (obj) => Object.keys(obj)
