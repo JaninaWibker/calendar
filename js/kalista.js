@@ -1,6 +1,20 @@
 'use strict';
 let kalista = () => {
   return {
+    gen_id: (obj_tree, path, i) => {
+      if(!path){ path = ''}
+      if(!i){ i = 0}
+      let l_path = path + '.' + i
+      let obj = obj_tree
+      obj['__id__'] = l_path
+      if(obj.children){
+        for(i=0;i<obj.children.length;i++){
+
+          obj.children[i] = kalista().gen_id(obj.children[i], l_path, i)
+        }
+      }
+      return obj
+    },
     dom: function(tag, prop, children) {
       let c = 1;
       let x = 0;
@@ -18,15 +32,15 @@ let kalista = () => {
       }
       return obj
     },
-    render: function(tree) {
+    render: (tree) => {
       let el = document.createElement(tree.tag);
-
       if (tree.prop) {
         for (let i = 0; i < Object.keys(tree.prop).length; i++) {
           el.setAttribute(Object.keys(tree.prop)[i], tree.prop[Object.keys(tree.prop)[i]])
         }
 
       }
+      el.setAttribute('kalista-dataid', tree.__id__)
       if (tree.text) {
         el.innerText = tree.text;
       }
@@ -41,57 +55,59 @@ let kalista = () => {
       }
       return el;
     },
-    diff: function(a, b, path, n, el) {
+    diff: (obj1, obj2, el, path, n) => {
+      let a = obj1, b = obj2
     if(!Array.isArray(a.children)) { a.children = []}
     if(!Array.isArray(b.children)) { b.children = []}
     if(a.prop == null){a.prop = {}}
     if(b.prop == null){b.prop = {}}
     let same = true
-    if(path === ''){
-      path = a.tag + ':nth-child(' + (n + 1) + ')'
-    } else {
-      path = path + ' ' + a.tag + ':nth-child(' + (n + 1) + ')'
-    }
+    let temp_result
+    let temp_selector
     if(a.tag === b.tag){
       if(keys(a.prop).length !== keys(b.prop).length){
         console.log('uneven amount of properties', path)
         if(keys(a.prop).length > keys(b.prop).length){
           for(let i=0;i<keys(a.prop).length;i++){
             if(keys(b.prop)[i] == undefined){
-              console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', path)
-              el.querySelector(path).removeAttribute(keys(a.prop)[i])
+              console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', a.__id__)
+              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').removeAttribute(keys(a.prop)[i])
             } else if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(b.prop)[i]){
-              console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', path)
-              el.querySelector(path).setAttribute(keys(a.prop)[i], key(a.prop, i))
+              console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
+              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i], key(b.prop, i))
             }
           }
         } else if(keys(a.prop).length < keys(b.prop).length){
           for(let i=0;i<(keys(b.prop).length - keys(a.prop).length);i++){
-            console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', path)
-            el.querySelector(path).setAttribute(keys(b.prop)[i+keys(a.prop).length], key(b.prop, i+keys(a.prop).length))
+            console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', a.__id__)
+            el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i+keys(a.prop).length], key(b.prop, i+keys(a.prop).length))
           }
         }
         same = false
       }
       for(let i=0;i<keys(a.prop).length;i++){
         if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(a.prop)[i]){
-          console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', path)
-          el.querySelector(path).setAttribute(keys(a.prop)[i], key(a.prop, i))
+          console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
+          el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i], key(b.prop, i))
           same = false
         }
       }
       if(a.children.length === b.children.length){
         for(let i=0;i<a.children.length;i++){
-          if(!kalista().diff(a.children[i], b.children[i], path, i, el)){
+          temp_result = kalista().diff(a.children[i], b.children[i], el, path, i)
+          if(!temp_result.isSame){
             same = false
+            b.children[i] = temp_result.newRenderTree
           }
         }
       } else {
         if(a.children.length > b.children.length){
           for(let i=0;i<a.children.length;i++){
             if(b.children[i]){
-              if(!kalista().diff(a.children[i], b.children[i], path, i, el)){
+              temp_result = kalista().diff(a.children[i], b.children[i], el, path, i)
+              if(!temp_result.isSame){
                 same = false
+                b.children[i] = temp_result.newRenderTree
               }
             } else {
               console.log('remove child node at ' + path , a.children[i])
@@ -100,8 +116,10 @@ let kalista = () => {
         } else if(b.children.length > a.children.length){
           for(let i=0;i<b.children.length;i++){
             if(a.children[i]){
-              if(!kalista().diff(a.children[i], b.children[i], path, i, el)){
+              temp_result = kalista().diff(a.children[i], b.children[i], el, path, i)
+              if(!temp_result.isSame){
                 same = false
+                b.children[i] = temp_result.newRenderTree
               }
             } else {
               console.log('add child(s) node at ' + path , b.children[i])
@@ -113,11 +131,18 @@ let kalista = () => {
       console.log('wrong tag: "' + a.tag + '" and "' + b.tag + '"', path)
       same = false
     }
-    return same
+    if(a.tag === '__text__' && b.tag === '__text__'){
+      if(a.text !== b.text){
+        temp_selector = el.querySelector('[kalista-dataid="' + a.__id__.substring(0, a.__id__.length - 2) + '"]')
+        temp_selector.firstChild.remove()
+        temp_selector.appendChild(document.createTextNode(a.text))
+      }
+    }
+    b.__id__ = a.__id__
+    return {'isSame': same, 'newRenderTree': b}
     }
   }
 }
-
 let _stores = {}
 let store = () => {
   return {

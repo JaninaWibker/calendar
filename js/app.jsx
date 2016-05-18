@@ -380,19 +380,18 @@ let sortEvents = () => {
   })
   store().change('state', state)
 }
-let oldRenderTree
-let newRenderTree
+
+let renderTrees = []
 let renderTarget = $('body')[0]
 
 let render = (state) => {
-  oldRenderTree = components.main_tree(state)
-  renderTarget.replaceChild(kalista().render(oldRenderTree), renderTarget.firstChild)
+  renderTrees = []
+  renderTrees[0] = kalista().gen_id(components.main_tree(state))
+  renderTarget.replaceChild(kalista().render(renderTrees[0]), renderTarget.firstChild)
 }
 let diff = (state) => {
-  newRenderTree = components.main_tree(state)
-  console.log(oldRenderTree)
-  kalista().diff(oldRenderTree, newRenderTree, '', 0, renderTarget.firstChild)
-  oldRenderTree = newRenderTree
+  let i = renderTrees.length - 1
+  renderTrees[i + 1] = kalista().diff(renderTrees[i], kalista().gen_id(components.main_tree(state)), renderTarget).newRenderTree
 }
 $('.header')[0].remove()
 sortEvents()
