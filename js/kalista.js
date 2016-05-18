@@ -70,16 +70,16 @@ let kalista = () => {
         if(keys(a.prop).length > keys(b.prop).length){
           for(let i=0;i<keys(a.prop).length;i++){
             if(keys(b.prop)[i] == undefined){
-              console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', a.__id__)
+              // console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', a.__id__)
               el.querySelector('[kalista-dataid="' + a.__id__ + '"]').removeAttribute(keys(a.prop)[i])
             } else if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(b.prop)[i]){
-              console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
+              // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
               el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i], key(b.prop, i))
             }
           }
         } else if(keys(a.prop).length < keys(b.prop).length){
           for(let i=0;i<(keys(b.prop).length - keys(a.prop).length);i++){
-            console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', a.__id__)
+            // console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', a.__id__)
             el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i+keys(a.prop).length], key(b.prop, i+keys(a.prop).length))
           }
         }
@@ -87,7 +87,7 @@ let kalista = () => {
       }
       for(let i=0;i<keys(a.prop).length;i++){
         if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(a.prop)[i]){
-          console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
+          // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
           el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i], key(b.prop, i))
           same = false
         }
@@ -110,7 +110,8 @@ let kalista = () => {
                 b.children[i] = temp_result.newRenderTree
               }
             } else {
-              console.log('remove child node at ' + path , a.children[i])
+              console.log('remove child node at ' + a.children[i].__id__ , a.children[i])
+              el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').remove
             }
           }
         } else if(b.children.length > a.children.length){
@@ -122,7 +123,9 @@ let kalista = () => {
                 b.children[i] = temp_result.newRenderTree
               }
             } else {
-              console.log('add child(s) node at ' + path , b.children[i])
+              console.log('add child node at ' + path , b.children[i])
+              el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').appendChild(kalista().render(b.children[i]))
+
             }
           }
         }
