@@ -61,12 +61,10 @@ let kalista = () => {
     if(!Array.isArray(b.children)) { b.children = []}
     if(a.prop == null){a.prop = {}}
     if(b.prop == null){b.prop = {}}
-    let same = true
-    let temp_result
-    let temp_selector
+    let same = true, temp_result, temp_selector
     if(a.tag === b.tag){
       if(keys(a.prop).length !== keys(b.prop).length){
-        console.log('uneven amount of properties', path)
+        // console.log('uneven amount of properties', path)
         if(keys(a.prop).length > keys(b.prop).length){
           for(let i=0;i<keys(a.prop).length;i++){
             if(keys(b.prop)[i] == undefined){
@@ -111,7 +109,7 @@ let kalista = () => {
               }
             } else {
               console.log('remove child node at ' + a.children[i].__id__ , a.children[i])
-              el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').remove
+              el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').remove()
             }
           }
         } else if(b.children.length > a.children.length){
@@ -123,7 +121,7 @@ let kalista = () => {
                 b.children[i] = temp_result.newRenderTree
               }
             } else {
-              console.log('add child node at ' + path , b.children[i])
+              console.log('add child node at ' + b.__id__ , b.children[i])
               el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').appendChild(kalista().render(b.children[i]))
 
             }
@@ -131,14 +129,15 @@ let kalista = () => {
         }
       }
     } else {
-      console.log('wrong tag: "' + a.tag + '" and "' + b.tag + '"', path)
+      // console.log('wrong tag: "' + a.tag + '" and "' + b.tag + '"', path)
       same = false
     }
     if(a.tag === '__text__' && b.tag === '__text__'){
       if(a.text !== b.text){
         temp_selector = el.querySelector('[kalista-dataid="' + a.__id__.substring(0, a.__id__.length - 2) + '"]')
         temp_selector.firstChild.remove()
-        temp_selector.appendChild(document.createTextNode(a.text))
+        temp_selector.appendChild(document.createTextNode(b.text))
+        console.log('change "' + a.text + '" to "' + b.text + '" at ' + a.__id__)
       }
     }
     b.__id__ = a.__id__
@@ -171,6 +170,6 @@ let store = () => {
   }
 }
 
-let $ = (query, i) => i ? document.querySelectorAll(query)[i] : document.querySelectorAll(query)
+let $ = (query, i) => typeof i === 'number' ? document.querySelectorAll(query)[i] : document.querySelectorAll(query)
 let key = (obj, i) => obj[Object.keys(obj)[i]]
 let keys = (obj) => Object.keys(obj)

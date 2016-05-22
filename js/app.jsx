@@ -397,4 +397,4 @@ $('.header')[0].remove()
 sortEvents()
 render(store().get('state'))
 
-store().subscribe('state', render)
+store().subscribe('state', diff)
