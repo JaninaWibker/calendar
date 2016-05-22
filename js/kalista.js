@@ -108,7 +108,7 @@ let kalista = () => {
                 b.children[i] = temp_result.newRenderTree
               }
             } else {
-              console.log('remove child node at ' + a.children[i].__id__ , a.children[i])
+              // console.log('remove child node at ' + a.children[i].__id__ , a.children[i])
               el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').remove()
             }
           }
@@ -121,8 +121,8 @@ let kalista = () => {
                 b.children[i] = temp_result.newRenderTree
               }
             } else {
-              console.log('add child node at ' + b.__id__ , b.children[i])
-              el.querySelector('[kalista-dataid="' + a.children[i].__id__ + '"]').appendChild(kalista().render(b.children[i]))
+              // console.log('add child node at ' + b.__id__ , b.children[i])
+              el.querySelector('[kalista-dataid="' + kalista().id(b.children[i].__id__).getParent() + '"]').appendChild(kalista().render(b.children[i]))
 
             }
           }
@@ -134,15 +134,31 @@ let kalista = () => {
     }
     if(a.tag === '__text__' && b.tag === '__text__'){
       if(a.text !== b.text){
-        temp_selector = el.querySelector('[kalista-dataid="' + a.__id__.substring(0, a.__id__.length - 2) + '"]')
+        temp_selector = el.querySelector('[kalista-dataid="' + kalista().id(a.__id__).getParent() + '"]')
         temp_selector.firstChild.remove()
         temp_selector.appendChild(document.createTextNode(b.text))
-        console.log('change "' + a.text + '" to "' + b.text + '" at ' + a.__id__)
+        // console.log('change "' + a.text + '" to "' + b.text + '" at ' + a.__id__)
       }
     }
     b.__id__ = a.__id__
     return {'isSame': same, 'newRenderTree': b}
+  },
+  id: (id) => {
+    let temp
+    return {
+      getParent: () => {
+        return id.substring(0, id.lastIndexOf('.'))
+      },
+      back: (n) => {
+        temp = id
+        n = n + 1
+        for(i=0;i<n;i++){
+          temp = temp.substring(0, temp.lastIndexOf('.'))
+        }
+        return temp
+      }
     }
+  }
   }
 }
 let _stores = {}
