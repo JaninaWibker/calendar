@@ -186,6 +186,6 @@ let store = () => {
   }
 }
 
-let $ = (query, i) => typeof i === 'number' ? document.querySelectorAll(query)[i] : document.querySelectorAll(query)
+let $ = (query, i, el = document) => typeof i === 'number' ? el.querySelectorAll(query)[i] : el.querySelectorAll(query)
 let key = (obj, i) => obj[Object.keys(obj)[i]]
 let keys = (obj) => Object.keys(obj)
