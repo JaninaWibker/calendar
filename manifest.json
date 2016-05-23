@@ -1,0 +1,22 @@
+{
+  "name": "calendar",
+  "short_name": "calendar",
+  "start_url": "./calendar",
+  "icons": [{
+    "src": "./calendar/img/icon-small.png",
+    "sizes": "32x32",
+    "type": "image/png"
+    }, {
+    "src": "./calendar/img/icon.png",
+    "sizes": "64x64",
+    "type": "image/png"
+    }],
+  "theme_color": "#9C27B0",
+  "display": "standalone",
+  "background_color": "red",
+  "description": "a simple calendar app by Jannik Wibker v0.1",
+  "dir": "ltr",
+  "lang": "en-US",
+  ​​"orientation": "portrait-primary"
+
+}
