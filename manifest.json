@@ -10,6 +10,11 @@
     "src": "./calendar/img/icon.png",
     "sizes": "64x64",
     "type": "image/png"
+    },
+    {
+    "src": "./calendar/img/icon-large.png",
+    "sizes": "144x144",
+    "type": "image/png"
     }],
   "theme_color": "#9C27B0",
   "background_color": "white",
@@ -19,5 +24,4 @@
   "dir": "ltr",
   "lang": "en-US",
   ​​"orientation": "portrait-primary"
-
 }
