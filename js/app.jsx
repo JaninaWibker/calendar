@@ -218,7 +218,7 @@ let components = {
       <div class="btn-container">
         <div class="btn-previous btn-fab" onclick="interaction().previous()"><i class="material-icons">keyboard_arrow_left</i></div>
         <div class="btn-next btn-fab" onclick="interaction().next()"><i class="material-icons">keyboard_arrow_right</i></div>
-        <div class="btn-add btn-fab" onclick="interaction().add()"><i class="material-icons">add</i></div>
+        <div class="btn-add btn-fab" onclick='interaction().add({"date":{"year":2016,"month":4,"day":26,"hour":8},"title":"test event"})'><i class="material-icons">add</i></div>
       </div>
     )
   },
@@ -322,8 +322,20 @@ let interaction = () => {
           console.log('error')
       }
     },
-    add: () => {
-      console.log('add')
+    add: (event) => {
+      let l_event = event
+      let l_store = store().get('state')
+      l_store.events.push(l_event)
+      let http = new XMLHttpRequest()
+      http.onreadystatechange = function() {
+        if(http.readyState === 4 && http.status === 200){
+          l_store.events = JSON.parse(http.responseText)
+          store().change('state', l_store)
+        }
+      }
+      http.open('POST', api_url + localStorage.getItem('api_endpoint_id'), true)
+      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+      http.send('key=' + JSON.stringify(l_store.events))
     }
   }
 }
@@ -389,8 +401,8 @@ let getEvents = () => {
           store().change('state', l_state)
         }
       };
-      http.open('GET', api_url + localStorage.getItem('api_endpoint_id'), true);
-      http.send();
+      http.open('GET', api_url + localStorage.getItem('api_endpoint_id'), true)
+      http.send()
     } else {
       console.log('no api_endpoint_id')
       http.onreadystatechange = function() {
@@ -398,9 +410,21 @@ let getEvents = () => {
          localStorage.setItem('api_endpoint_id', http.responseText)
         }
       };
-      http.open('GET', api_url + 'new', true);
-      http.send();
+      http.open('GET', api_url + 'new', true)
+      http.send()
     }
+  }
+}
+
+let sharedMode = () => {
+  if(location.hash.length === 25){
+    let l_hash = location.hash.substring(1, location.hash.length)
+    localStorage.setItem('normal_api_endpoint_id', localStorage.getItem('api_endpoint_id'))
+    localStorage.setItem('api_endpoint_id', l_hash)
+    console.log(localStorage.getItem('api_endpoint_id'), localStorage.getItem('normal_api_endpoint_id'))
+  } else if(localStorage.getItem('normal_api_endpoint_id')){
+    localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'))
+    localStorage.removeItem('normal_api_endpoint_id')
   }
 }
 
@@ -417,8 +441,9 @@ let diff = (state) => {
   renderTrees[i + 1] = kalista().diff(renderTrees[i], kalista().gen_id(components.main_tree(state)), renderTarget).newRenderTree
 }
 $('.header')[0].remove()
-sortEvents()
+sharedMode()
 getEvents()
+sortEvents()
 render(store().get('state'))
 
 store().subscribe('state', diff)

@@ -400,7 +400,7 @@ let components = {
       ),
       kalista().dom(
         'div',
-        { 'class': 'btn-add btn-fab', onclick: 'interaction().add()' },
+        { 'class': 'btn-add btn-fab', onclick: 'interaction().add({"date":{"year":2016,"month":4,"day":26,"hour":8},"title":"test event"})' },
         kalista().dom(
           'i',
           { 'class': 'material-icons' },
@@ -509,8 +509,20 @@ let interaction = () => {
           console.log('error');
       }
     },
-    add: () => {
-      console.log('add');
+    add: event => {
+      let l_event = event;
+      let l_store = store().get('state');
+      l_store.events.push(l_event);
+      let http = new XMLHttpRequest();
+      http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+          l_store.events = JSON.parse(http.responseText);
+          store().change('state', l_store);
+        }
+      };
+      http.open('POST', api_url + localStorage.getItem('api_endpoint_id'), true);
+      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+      http.send('key=' + JSON.stringify(l_store.events));
     }
   };
 };
@@ -595,6 +607,18 @@ let getEvents = () => {
   }
 };
 
+let sharedMode = () => {
+  if (location.hash.length === 25) {
+    let l_hash = location.hash.substring(1, location.hash.length);
+    localStorage.setItem('normal_api_endpoint_id', localStorage.getItem('api_endpoint_id'));
+    localStorage.setItem('api_endpoint_id', l_hash);
+    console.log(localStorage.getItem('api_endpoint_id'), localStorage.getItem('normal_api_endpoint_id'));
+  } else if (localStorage.getItem('normal_api_endpoint_id')) {
+    localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
+    localStorage.removeItem('normal_api_endpoint_id');
+  }
+};
+
 let renderTrees = [];
 let renderTarget = $('body')[0];
 
@@ -608,8 +632,9 @@ let diff = state => {
   renderTrees[i + 1] = kalista().diff(renderTrees[i], kalista().gen_id(components.main_tree(state)), renderTarget).newRenderTree;
 };
 $('.header')[0].remove();
-sortEvents();
+sharedMode();
 getEvents();
+sortEvents();
 render(store().get('state'));
 
 store().subscribe('state', diff);

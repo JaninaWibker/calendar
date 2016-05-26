@@ -13,7 +13,7 @@ let getData = (request, reply) => {
 	if(store().get(l_id)){
 		reply(store().get(l_id))
 	} else {
-		reply('null')
+		reply('[]')
 	}
 }
 
@@ -26,7 +26,7 @@ let setData = (request, reply) => {
 		console.log(_stores)
 		reply(store().get(l_id))
 	} else {
-		reply('null')
+		reply('[]')
 	}
 }
 
