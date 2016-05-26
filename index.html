@@ -11,6 +11,15 @@
   </head>
   <body>
     <div class="header"></div>
+    <script>
+      function check() {
+        'use strict';
+        try { eval("var foo = (x)=>x+1"); }
+        catch (e) { return false; }
+        return true;
+      }
+      if(!check()) window.location = window.location + 'fallback.html'
+    </script>
     <script src="./js/kalista.js"></script>
     <script src="./js/app.js"></script>
   </body>
