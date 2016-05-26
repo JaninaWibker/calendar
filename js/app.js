@@ -2,9 +2,11 @@
 'use strict';
 
 let api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+let base_url = location.href;
 let __date = new Date();
 store().create('state', {
   view: 0,
+  message: 0,
   date: {
     day: __date.getDate(),
     month: __date.getMonth(),
@@ -73,7 +75,16 @@ let components = {
           { 'class': 'nav-header-title' },
           state.nav.title
         ),
-        components.navItems_tree(state)
+        components.navItems_tree(state),
+        kalista().dom(
+          'div',
+          { 'class': 'nav-button-share', onclick: 'interaction().share()' },
+          kalista().dom(
+            'i',
+            { 'class': 'material-icons' },
+            'share'
+          )
+        )
       )
     );
   },
@@ -105,6 +116,85 @@ let components = {
       components.month_tree(state)
     );
   },
+  message: state => {
+    if (state.message === 'share') {
+      return kalista().dom(
+        'div',
+        { 'class': 'bg-dim' },
+        kalista().dom(
+          'div',
+          { 'class': 'message-box' },
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'copy this link:'
+          ),
+          kalista().dom('br', null),
+          kalista().dom(
+            'div',
+            { 'class': 'message-link' },
+            base_url + '#' + localStorage.getItem('api_endpoint_id')
+          ),
+          kalista().dom(
+            'div',
+            { 'class': 'message-button message-button-full', onclick: 'interaction().closeMessage()' },
+            'Done'
+          )
+        )
+      );
+    } else if (state.message === 'add') {
+      return kalista().dom(
+        'div',
+        { 'class': 'bg-dim' },
+        kalista().dom(
+          'div',
+          { 'class': 'message-box' },
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'name:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-add-name', type: 'text', placeholder: 'Set name...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'year:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-add-year', type: 'number', placeholder: 'Set year...', value: state.date.year }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'month:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'day:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-add-day', type: 'number', placeholder: 'Set day...', value: state.date.day }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'hour:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-add-hour', type: 'number', placeholder: 'Set hour...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' },
+            'Cancel'
+          ),
+          kalista().dom(
+            'div',
+            { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this)' },
+            'Save'
+          )
+        )
+      );
+    } else {
+      return kalista().dom('div', null);
+    }
+  },
   main_tree: state => {
     return kalista().dom(
       'div',
@@ -112,7 +202,8 @@ let components = {
       components.header_tree(state),
       components.nav_tree(state),
       components.view_tree(state),
-      components.buttons()
+      components.buttons(),
+      components.message(state)
     );
   },
   day_tree: state => {
@@ -509,20 +600,36 @@ let interaction = () => {
           console.log('error');
       }
     },
-    add: event => {
-      let l_event = event;
-      let l_store = store().get('state');
-      l_store.events.push(l_event);
-      let http = new XMLHttpRequest();
-      http.onreadystatechange = function () {
-        if (http.readyState === 4 && http.status === 200) {
-          l_store.events = JSON.parse(http.responseText);
-          store().change('state', l_store);
-        }
+    add: () => {
+      let l_state = store().get('state');
+      l_state.message = 'add';
+      store().change('state', l_state);
+    },
+    addEvent: that => {
+      let l_state = store().get('state');
+      let l_event = {
+        date: {
+          year: parseInt($('.event-add-year', 0, that.parentNode).value),
+          month: parseInt($('.event-add-month', 0, that.parentNode).value),
+          day: parseInt($('.event-add-day', 0, that.parentNode).value),
+          hour: parseInt($('.event-add-hour', 0, that.parentNode).value)
+        },
+        title: $('.event-add-name', 0, that.parentNode).value
       };
-      http.open('POST', api_url + localStorage.getItem('api_endpoint_id'), true);
-      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-      http.send('key=' + JSON.stringify(l_store.events));
+      l_state.events.push(l_event);
+      syncEvents(l_state);
+      interaction().closeMessage();
+    },
+    share: () => {
+      let l_state = store().get('state');
+      l_state.message = 'share';
+      l_state.nav.open = false;
+      store().change('state', l_state);
+    },
+    closeMessage: () => {
+      let l_state = store().get('state');
+      l_state.message = 0;
+      store().change('state', l_state);
     }
   };
 };
@@ -605,6 +712,20 @@ let getEvents = () => {
       http.send();
     }
   }
+};
+
+let syncEvents = state => {
+  let http = new XMLHttpRequest();
+  http.onreadystatechange = function () {
+    if (http.readyState === 4 && http.status === 200) {
+      state.events = JSON.parse(http.responseText);
+      store().change('state', state);
+      sortEvents();
+    }
+  };
+  http.open('POST', api_url + localStorage.getItem('api_endpoint_id'), true);
+  http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+  http.send('key=' + JSON.stringify(state.events));
 };
 
 let sharedMode = () => {

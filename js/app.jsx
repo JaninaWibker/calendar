@@ -1,9 +1,11 @@
 /** @jsx kalista().dom */
 'use strict'
 let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
+let base_url = location.href
 let __date = new Date()
 store().create('state', {
   view: 0,
+  message: 0,
   date: {
     day: __date.getDate(),
     month: __date.getMonth(),
@@ -52,6 +54,7 @@ let components = {
           <div class="nav-header-img"></div>
           <div class="nav-header-title">{state.nav.title}</div>
           {components.navItems_tree(state)}
+          <div class="nav-button-share" onclick="interaction().share()"><i class="material-icons">share</i></div>
         </div>
       </div>
     )
@@ -82,6 +85,41 @@ let components = {
       </div>
     )
   },
+  message: (state) => {
+    if(state.message === 'share'){
+      return (
+        <div class="bg-dim">
+          <div class="message-box">
+            <div class="message-text">copy this link:</div>
+            <br />
+            <div class="message-link">{base_url + '#' + localStorage.getItem('api_endpoint_id')}</div>
+            <div class="message-button message-button-full" onclick="interaction().closeMessage()">Done</div>
+          </div>
+        </div>
+      )
+    } else if (state.message === 'add'){
+      return (
+        <div class="bg-dim">
+          <div class="message-box">
+            <div class="message-text">name:</div>
+            <input class="message-input event-add-name" type="text" placeholder="Set name..."></input>
+            <div class="message-text">year:</div>
+            <input class="message-input event-add-year" type="number" placeholder="Set year..." value={state.date.year}></input>
+            <div class="message-text">month:</div>
+            <input class="message-input event-add-month" type="number" placeholder="Set month..." value={state.date.month}></input>
+            <div class="message-text">day:</div>
+            <input class="message-input event-add-day" type="number" placeholder="Set day..." value={state.date.day}></input>
+            <div class="message-text">hour:</div>
+            <input class="message-input event-add-hour" type="number" placeholder="Set hour..."></input>
+            <div class="message-button message-button-half btn-secondary" onclick="interaction().closeMessage()">Cancel</div>
+            <div class="message-button message-button-half btn-primary" onclick="interaction().addEvent(this)">Save</div>
+          </div>
+        </div>
+      )
+    } else {
+      return <div></div>
+    }
+  },
   main_tree: (state) => {
     return (
       <div>
@@ -89,6 +127,7 @@ let components = {
         {components.nav_tree(state)}
         {components.view_tree(state)}
         {components.buttons()}
+        {components.message(state)}
       </div>
     )
   },
@@ -322,20 +361,36 @@ let interaction = () => {
           console.log('error')
       }
     },
-    add: (event) => {
-      let l_event = event
-      let l_store = store().get('state')
-      l_store.events.push(l_event)
-      let http = new XMLHttpRequest()
-      http.onreadystatechange = function() {
-        if(http.readyState === 4 && http.status === 200){
-          l_store.events = JSON.parse(http.responseText)
-          store().change('state', l_store)
-        }
+    add: () => {
+      let l_state = store().get('state')
+      l_state.message = 'add'
+      store().change('state', l_state)
+    },
+    addEvent: (that) => {
+      let l_state = store().get('state')
+      let l_event = {
+        date: {
+          year: parseInt($('.event-add-year', 0, that.parentNode).value),
+          month: parseInt($('.event-add-month', 0, that.parentNode).value),
+          day: parseInt($('.event-add-day', 0, that.parentNode).value),
+          hour: parseInt($('.event-add-hour', 0, that.parentNode).value),
+        },
+        title: $('.event-add-name', 0, that.parentNode).value
       }
-      http.open('POST', api_url + localStorage.getItem('api_endpoint_id'), true)
-      http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
-      http.send('key=' + JSON.stringify(l_store.events))
+      l_state.events.push(l_event)
+      syncEvents(l_state)
+      interaction().closeMessage()
+    },
+    share: () => {
+      let l_state = store().get('state')
+      l_state.message = 'share'
+      l_state.nav.open = false
+      store().change('state', l_state)
+    },
+    closeMessage: () => {
+      let l_state = store().get('state')
+      l_state.message = 0
+      store().change('state', l_state)
     }
   }
 }
@@ -414,6 +469,21 @@ let getEvents = () => {
       http.send()
     }
   }
+}
+
+let syncEvents = (state) => {
+  let http = new XMLHttpRequest()
+  http.onreadystatechange = function() {
+    if(http.readyState === 4 && http.status === 200){
+      state.events = JSON.parse(http.responseText)
+      store().change('state', state)
+      sortEvents()
+    }
+  }
+  http.open('POST', api_url + localStorage.getItem('api_endpoint_id'), true)
+  http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded')
+  http.send('key=' + JSON.stringify(state.events))
+
 }
 
 let sharedMode = () => {

@@ -291,3 +291,92 @@ td:empty {
   left: 10px;
   z-index: 3
 }
+
+.message-box {
+  position: absolute;
+  display: block;
+  top: 40px;
+  width: calc(100vw - 40px);
+  font-family: 'Roboto', sans-serif;
+  background-color: white;
+  color: black;
+  text-align: center;
+  margin: 40px 20px;
+  box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);
+}
+
+.message-text {
+  padding-top: 5px;
+}
+
+.message-button {
+  margin-top: 10px;
+  background-color: #9C27B0;
+  color: white;
+  height: 32px;
+  text-align: center;
+  line-height: 32px;
+}
+
+.message-button-full {
+  width: 100%;
+}
+
+.message-button-half {
+  width: 50%;
+  float: left;
+}
+
+.message-input {
+  box-sizing: border-box;
+  position: relative;
+  height: 32px;
+  border: none;
+  border-bottom: 1px solid rgba(0, 0, 0,0.12);
+  margin: 0px 10px;
+  text-align: left;
+  background-color: inherit;
+  width: calc(100% - 20px)
+}
+
+.message-input:focus {
+  border-bottom: 1px solid #9C27B0;
+  outline: none;
+}
+
+.message-link {
+  position: relative;
+  font-size: 14px;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: 2px;
+  margin: 10px;
+  padding: 5px;
+  margin-top: -15px;
+  box-sizing: border-box;
+  max-width: calc(100% - 20px);
+  word-break: break-all;
+}
+
+.btn-primary {
+  background-color: #E91E63;
+}
+.btn-secondary {
+  background-color: #9C27B0;
+}
+
+
+.nav-button-share {
+  position: relative;
+  display: block;
+  bottom: 0px;
+}
+
+.bg-dim {
+  position: absolute;
+  top: 0px;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.5);
+}
