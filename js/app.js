@@ -19,7 +19,7 @@ store().create('state', {
     title: 'Day/Week/Month',
     content: ['Day', 'Week', 'Month', 'Today']
   },
-  events: [{ date: { year: 2016, month: 4, day: 14, hour: 14 }, title: 'three' }, { date: { year: 2016, month: 4, day: 14, hour: 12 }, title: 'one' }, { date: { year: 2016, month: 4, day: 14, hour: 13 }, title: 'two' }]
+  events: []
 });
 let components = {
   header_tree: state => {
@@ -568,6 +568,32 @@ let sortEvents = () => {
   store().change('state', state);
 };
 
+let getEvents = () => {
+  let http = new XMLHttpRequest();
+  if (typeof Storage !== 'undefined') {
+    if (localStorage.getItem('api_endpoint_id')) {
+      http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+          let l_state = store().get('state');
+          l_state.events = JSON.parse(http.response);
+          store().change('state', l_state);
+        }
+      };
+      http.open('GET', 'http://xyxyxy.duckdns.org:9123/api/' + localStorage.getItem('api_endpoint_id'), true);
+      http.send();
+    } else {
+      console.log('no api_endpoint_id');
+      http.onreadystatechange = function () {
+        if (http.readyState === 4 && http.status === 200) {
+          localStorage.setItem('api_endpoint_id', http.responseText);
+        }
+      };
+      http.open('GET', 'http://xyxyxy.duckdns.org:9123/api/new', true);
+      http.send();
+    }
+  }
+};
+
 let renderTrees = [];
 let renderTarget = $('body')[0];
 
@@ -582,6 +608,7 @@ let diff = state => {
 };
 $('.header')[0].remove();
 sortEvents();
+getEvents();
 render(store().get('state'));
 
 store().subscribe('state', diff);

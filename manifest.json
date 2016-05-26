@@ -1,18 +1,19 @@
 {
   "name": "calendar",
   "short_name": "calendar",
-  "start_url": "./calendar",
+  "start_url": "/calendar",
   "icons": [{
-    "src": "./calendar/img/icon-small.png",
+    "src": "img/icon-small.png",
     "sizes": "32x32",
     "type": "image/png"
-    }, {
-    "src": "./calendar/img/icon.png",
+    },
+    {
+    "src": "img/icon.png",
     "sizes": "64x64",
     "type": "image/png"
     },
     {
-    "src": "./calendar/img/icon-large.png",
+    "src": "img/icon-large.png",
     "sizes": "144x144",
     "type": "image/png"
     }],
