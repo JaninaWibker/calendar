@@ -1,6 +1,7 @@
 /** @jsx kalista().dom */
 'use strict';
 
+let api_url = 'http://xyxyxy.duckdns.org:9123/api/';
 let __date = new Date();
 store().create('state', {
   view: 0,
@@ -579,7 +580,7 @@ let getEvents = () => {
           store().change('state', l_state);
         }
       };
-      http.open('GET', 'http://xyxyxy.duckdns.org:9123/api/' + localStorage.getItem('api_endpoint_id'), true);
+      http.open('GET', api_url + localStorage.getItem('api_endpoint_id'), true);
       http.send();
     } else {
       console.log('no api_endpoint_id');
@@ -588,7 +589,7 @@ let getEvents = () => {
           localStorage.setItem('api_endpoint_id', http.responseText);
         }
       };
-      http.open('GET', 'http://xyxyxy.duckdns.org:9123/api/new', true);
+      http.open('GET', api_url + 'new', true);
       http.send();
     }
   }
