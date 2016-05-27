@@ -99,12 +99,13 @@ var kalista = function kalista() {
             }
           }
           same = false;
-        }
-        for (var _i6 = 0; _i6 < keys(a.prop).length; _i6++) {
-          if (a.prop[keys(a.prop)[_i6]] !== b.prop[keys(a.prop)[_i6]] || keys(a.prop)[_i6] !== keys(a.prop)[_i6]) {
-            // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
-            el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i6], key(b.prop, _i6));
-            same = false;
+        } else {
+          for (var _i6 = 0; _i6 < keys(a.prop).length; _i6++) {
+            if (a.prop[keys(a.prop)[_i6]] !== b.prop[keys(a.prop)[_i6]] || keys(a.prop)[_i6] !== keys(a.prop)[_i6]) {
+              // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
+              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i6], key(b.prop, _i6));
+              same = false;
+            }
           }
         }
         if (a.children.length === b.children.length) {
