@@ -1,7 +1,7 @@
 /** @jsx kalista().dom */
 'use strict';
 
-let api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+let api_url = "https://calendar-backend-gr30n3yzz.c9users.io"; //'http://xyxyxy.duckdns.org:9123/api/'
 let base_url = location.href;
 let api_endpoint_id, normal_api_endpoint_id;
 let __date = new Date();
@@ -746,7 +746,7 @@ let sharedMode = () => {
 };
 
 let renderTrees = [];
-let renderTarget = $('body')[0];
+let renderTarget = $('body', 0);
 
 let render = state => {
   renderTrees = [];
