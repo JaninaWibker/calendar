@@ -40,7 +40,7 @@ var components = {
     return kalista().dom('div', { 'class': 'header' }, kalista().dom('div', { 'class': 'header-menu-icon', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'menu')), kalista().dom('div', { 'class': 'header-section' }, curr + " | " + state.nav.content[state.view]));
   },
   nav_tree: function nav_tree(state) {
-    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-bottom-buttons' }, kalista().dom('div', { 'class': 'nav-button', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share')), kalista().dom('div', { 'class': 'nav-button', onclick: 'syncEvents(store().get(\'state\'))' }, kalista().dom('i', { 'class': 'material-icons' }, 'sync')))));
+    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-bottom-buttons' }, kalista().dom('div', { 'class': 'nav-button', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share')), kalista().dom('div', { 'class': 'nav-button', onclick: 'syncEvents(store().get(\'state\'), true)' }, kalista().dom('i', { 'class': 'material-icons' }, 'sync')))));
   },
   navItems_tree: function navItems_tree(state) {
     var children = [];
@@ -64,10 +64,11 @@ var components = {
     if (typeof state.message === 'string' && state.message === 'share') {
       return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'copy this link:'), kalista().dom('br', null), kalista().dom('div', { 'class': 'message-link' }, base_url + '#' + localStorage.getItem('api_endpoint_id')), kalista().dom('div', { 'class': 'message-button message-button-full', onclick: 'interaction().closeMessage()' }, 'Done')));
     } else if (typeof state.message === 'string' && state.message === 'add') {
-      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'name:'), kalista().dom('input', { 'class': 'message-input event-add-name', type: 'text', placeholder: 'Set name...' }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-add-year', type: 'number', placeholder: 'Set year...', value: state.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-add-day', type: 'number', placeholder: 'Set day...', value: state.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-add-hour', type: 'number', placeholder: 'Set hour...' }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this)' }, 'Save')));
+      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'name:'), kalista().dom('input', { 'class': 'message-input event-set-name', type: 'text', placeholder: 'Set name...' }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-set-year', type: 'number', placeholder: 'Set year...', value: state.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-set-month', type: 'number', placeholder: 'Set month...', value: state.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-set-day', type: 'number', placeholder: 'Set day...', value: state.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-set-hour', type: 'number', placeholder: 'Set hour...' }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this)' }, 'Save')));
     } else if (typeof state.message === 'string' && state.message.indexOf('event') === 0) {
       var l_id = state.message.substring(6, state.message.length);
-      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'title:'), kalista().dom('input', { 'class': 'message-input event-change-name', type: 'text', placeholder: 'Change title...' }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-change-year', type: 'text', placeholder: 'Change year...' }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-change-month', type: 'text', placeholder: 'Change month...' }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-change-day', type: 'text', placeholder: 'Change day...' }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-change-hour', type: 'text', placeholder: 'Change hour...' }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: '' }, 'Save')));
+      var l_event = getEventById(l_id).event;
+      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'title:'), kalista().dom('input', { 'class': 'message-input event-set-name', type: 'text', placeholder: 'Change title...', value: l_event.title }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-set-year', type: 'text', placeholder: 'Change year...', value: l_event.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-set-month', type: 'text', placeholder: 'Change month...', value: l_event.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-set-day', type: 'text', placeholder: 'Change day...', value: l_event.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-set-hour', type: 'text', placeholder: 'Change hour...', value: l_event.date.hour }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this, "' + l_id + '")' }, 'Save')));
     } else {
       return kalista().dom('div', null);
     }
@@ -254,19 +255,25 @@ var interaction = function interaction() {
       store().change('state', l_state);
     },
     addEvent: function addEvent(that) {
+      var id = arguments.length <= 1 || arguments[1] === undefined ? gen_random() : arguments[1];
+
       var l_state = store().get('state');
       var l_event = {
         date: {
-          year: parseInt($('.event-add-year', 0, that.parentNode).value),
-          month: parseInt($('.event-add-month', 0, that.parentNode).value) - 1,
-          day: parseInt($('.event-add-day', 0, that.parentNode).value),
-          hour: parseInt($('.event-add-hour', 0, that.parentNode).value)
+          year: parseInt($('.event-set-year', 0, that.parentNode).value),
+          month: parseInt($('.event-set-month', 0, that.parentNode).value) - 1,
+          day: parseInt($('.event-set-day', 0, that.parentNode).value),
+          hour: parseInt($('.event-set-hour', 0, that.parentNode).value)
         },
-        title: $('.event-add-name', 0, that.parentNode).value,
-        id: gen_random()
+        title: $('.event-set-name', 0, that.parentNode).value,
+        id: id
       };
-      l_state.events.push(l_event);
-      syncEvents(l_state);
+      if (getEventById(id)) {
+        l_state.events[getEventById(id).i] = l_event;
+        syncEvents(l_state, false);
+      } else {
+        l_state.events.push(l_event);
+      }
       interaction().closeMessage();
     },
     share: function share() {
@@ -335,7 +342,14 @@ var getMonthData = function getMonthData(year, month) {
   return weeks;
 };
 
-var getEventById = function getEventById(id) {};
+var getEventById = function getEventById(id) {
+  var l_events = store().get('state').events;
+  for (var i = 0; i < l_events.length; i++) {
+    if (l_events[i].id === id) {
+      return { event: l_events[i], i: i };
+    }
+  }
+};
 
 var sortEvents = function sortEvents() {
   var state = store().get('state');
@@ -373,12 +387,12 @@ var getEvents = function getEvents() {
   }
 };
 
-var syncEvents = function syncEvents(state) {
+var syncEvents = function syncEvents(state, toast) {
   var http = new XMLHttpRequest();
   http.onreadystatechange = function () {
     if (http.readyState === 4 && http.status === 200) {
       state.events = JSON.parse(http.responseText);
-      showToast('synchronized', 500);
+      if (toast === true) showToast('synchronized', 700);
       store().change('state', state);
       sortEvents();
     }

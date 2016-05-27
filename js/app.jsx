@@ -58,7 +58,7 @@ let components = {
           {components.navItems_tree(state)}
           <div class="nav-bottom-buttons">
             <div class="nav-button" onclick="interaction().share()"><i class="material-icons">share</i></div>
-            <div class="nav-button" onclick="syncEvents(store().get('state'))"><i class="material-icons">sync</i></div>
+            <div class="nav-button" onclick="syncEvents(store().get('state'), true)"><i class="material-icons">sync</i></div>
           </div>
         </div>
       </div>
@@ -107,15 +107,15 @@ let components = {
         <div class="bg-dim">
           <div class="message-box">
             <div class="message-text">name:</div>
-            <input class="message-input event-add-name" type="text" placeholder="Set name..."></input>
+            <input class="message-input event-set-name" type="text" placeholder="Set name..."></input>
             <div class="message-text">year:</div>
-            <input class="message-input event-add-year" type="number" placeholder="Set year..." value={state.date.year}></input>
+            <input class="message-input event-set-year" type="number" placeholder="Set year..." value={state.date.year}></input>
             <div class="message-text">month:</div>
-            <input class="message-input event-add-month" type="number" placeholder="Set month..." value={state.date.month + 1}></input>
+            <input class="message-input event-set-month" type="number" placeholder="Set month..." value={state.date.month + 1}></input>
             <div class="message-text">day:</div>
-            <input class="message-input event-add-day" type="number" placeholder="Set day..." value={state.date.day}></input>
+            <input class="message-input event-set-day" type="number" placeholder="Set day..." value={state.date.day}></input>
             <div class="message-text">hour:</div>
-            <input class="message-input event-add-hour" type="number" placeholder="Set hour..."></input>
+            <input class="message-input event-set-hour" type="number" placeholder="Set hour..."></input>
             <div class="message-button message-button-half btn-secondary" onclick="interaction().closeMessage()">Cancel</div>
             <div class="message-button message-button-half btn-primary" onclick="interaction().addEvent(this)">Save</div>
           </div>
@@ -123,21 +123,22 @@ let components = {
       )
     } else if(typeof state.message === 'string' && state.message.indexOf('event') === 0) {
       let l_id = state.message.substring(6, state.message.length)
+      let l_event = getEventById(l_id).event
       return (
         <div class="bg-dim">
           <div class="message-box">
             <div class="message-text">title:</div>
-            <input class="message-input event-change-name" type="text" placeholder="Change title..."></input>
+            <input class="message-input event-set-name" type="text" placeholder="Change title..." value={l_event.title}></input>
             <div class="message-text">year:</div>
-            <input class="message-input event-change-year" type="text" placeholder="Change year..."></input>
+            <input class="message-input event-set-year" type="text" placeholder="Change year..." value={l_event.date.year}></input>
             <div class="message-text">month:</div>
-            <input class="message-input event-change-month" type="text" placeholder="Change month..."></input>
+            <input class="message-input event-set-month" type="text" placeholder="Change month..." value={l_event.date.month + 1}></input>
             <div class="message-text">day:</div>
-            <input class="message-input event-change-day" type="text" placeholder="Change day..."></input>
+            <input class="message-input event-set-day" type="text" placeholder="Change day..." value={l_event.date.day}></input>
             <div class="message-text">hour:</div>
-            <input class="message-input event-change-hour" type="text" placeholder="Change hour..."></input>
+            <input class="message-input event-set-hour" type="text" placeholder="Change hour..." value={l_event.date.hour}></input>
             <div class="message-button message-button-half btn-secondary" onclick="interaction().closeMessage()">Cancel</div>
-            <div class="message-button message-button-half btn-primary" onclick="">Save</div>
+            <div class="message-button message-button-half btn-primary" onclick={'interaction().addEvent(this, "' + l_id + '")'}>Save</div>
           </div>
         </div>
       )
@@ -392,20 +393,23 @@ let interaction = () => {
       l_state.message = 'add'
       store().change('state', l_state)
     },
-    addEvent: (that) => {
+    addEvent: (that, id = gen_random()) => {
       let l_state = store().get('state')
       let l_event = {
         date: {
-          year: parseInt($('.event-add-year', 0, that.parentNode).value),
-          month: parseInt($('.event-add-month', 0, that.parentNode).value) - 1,
-          day: parseInt($('.event-add-day', 0, that.parentNode).value),
-          hour: parseInt($('.event-add-hour', 0, that.parentNode).value),
+          year: parseInt($('.event-set-year', 0, that.parentNode).value),
+          month: parseInt($('.event-set-month', 0, that.parentNode).value) - 1,
+          day: parseInt($('.event-set-day', 0, that.parentNode).value),
+          hour: parseInt($('.event-set-hour', 0, that.parentNode).value),
         },
-        title: $('.event-add-name', 0, that.parentNode).value,
-        id: gen_random()
+        title: $('.event-set-name', 0, that.parentNode).value,
+        id: id
       }
+      if(getEventById(id)){ l_state.events[getEventById(id).i] = l_event
+      syncEvents(l_state, false)
+    } else {
       l_state.events.push(l_event)
-      syncEvents(l_state)
+    }
       interaction().closeMessage()
     },
     share: () => {
@@ -471,7 +475,12 @@ let getMonthData = (year, month) => {
 }
 
 let getEventById = (id) => {
-
+  let l_events = store().get('state').events
+  for(let i=0;i<l_events.length;i++){
+    if(l_events[i].id === id){
+      return {event: l_events[i], i: i}
+    }
+  }
 }
 
 let sortEvents = () => {
@@ -510,12 +519,12 @@ let getEvents = () => {
   }
 }
 
-let syncEvents = (state) => {
+let syncEvents = (state, toast) => {
   let http = new XMLHttpRequest()
   http.onreadystatechange = function() {
     if(http.readyState === 4 && http.status === 200){
       state.events = JSON.parse(http.responseText)
-      showToast('synchronized', 700)
+      if(toast === true) showToast('synchronized', 700)
       store().change('state', state)
       sortEvents()
     }

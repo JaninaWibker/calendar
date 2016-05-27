@@ -315,9 +315,9 @@ td:empty {
   margin-top: 10px;
   background-color: #9C27B0;
   color: white;
-  height: 32px;
+  height: 36px;
   text-align: center;
-  line-height: 32px;
+  line-height: 36px;
 }
 
 .message-button-full {
