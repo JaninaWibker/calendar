@@ -24,9 +24,18 @@ self.addEventListener('fetch', (event) => {
     caches.match(event.request)
       .then( (response) => {
         if(response) {
+          console.log('[sw] response found in cache')
           return response
         }
-        return fetch(event.request)
+        console.log('[sw] no response found in cache')
+        return fetch(event.request).then( (response) => {
+          console.log('[sw] network response: ', response)
+          return response
+        }).catch( (error) => {
+          console.log('[sw] network failed')
+
+          throw error
+        })
       })
   )
 })

@@ -20,7 +20,6 @@
   "theme_color": "#9C27B0",
   "background_color": "white",
   "display": "standalone",
-  "background_color": "red",
   "description": "a simple calendar app by Jannik Wibker v0.1",
   "dir": "ltr",
   "lang": "en-US",
