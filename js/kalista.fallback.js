@@ -175,6 +175,9 @@ var kalista = function kalista() {
           return temp;
         }
       };
+    },
+    version: function version() {
+      return 'kalista.js v1.0';
     }
   };
 };

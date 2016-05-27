@@ -1,7 +1,7 @@
 /** @jsx kalista().dom */
 'use strict';
 
-var api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+var api_url = "https://calendar-backend-gr30n3yzz.c9users.io"; //'http://xyxyxy.duckdns.org:9123/api/'
 var base_url = location.href;
 var api_endpoint_id = void 0,
     normal_api_endpoint_id = void 0;
@@ -387,7 +387,7 @@ var sharedMode = function sharedMode() {
 };
 
 var renderTrees = [];
-var renderTarget = $('body')[0];
+var renderTarget = $('body', 0);
 
 var render = function render(state) {
   renderTrees = [];
