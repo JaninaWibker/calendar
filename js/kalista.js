@@ -82,12 +82,13 @@ let kalista = () => {
           }
         }
         same = false
-      }
-      for(let i=0;i<keys(a.prop).length;i++){
-        if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(a.prop)[i]){
-          // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
-          el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i], key(b.prop, i))
-          same = false
+      } else {
+        for(let i=0;i<keys(a.prop).length;i++){
+          if(a.prop[keys(a.prop)[i]] !== b.prop[keys(a.prop)[i]] || keys(a.prop)[i] !== keys(a.prop)[i]){
+            // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
+            el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[i], key(b.prop, i))
+            same = false
+          }
         }
       }
       if(a.children.length === b.children.length){
