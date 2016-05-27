@@ -17,6 +17,12 @@ this.addEventListener('install', (event) => {
 
 this.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request)
+    caches.match(event.request).catch(() => {
+      return event.default()
+    }).catch( () => {
+      return caches.math(
+        '/calendar/fallback.json'
+      )
+    })
   )
 })

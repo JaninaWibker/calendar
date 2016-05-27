@@ -3,6 +3,7 @@
 
 let api_url = 'http://xyxyxy.duckdns.org:9123/api/';
 let base_url = location.href;
+let api_endpoint_id, normal_api_endpoint_id;
 let __date = new Date();
 store().create('state', {
   view: 0,
@@ -166,7 +167,7 @@ let components = {
             { 'class': 'message-text' },
             'month:'
           ),
-          kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month }),
+          kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month + 1 }),
           kalista().dom(
             'div',
             { 'class': 'message-text' },
@@ -610,7 +611,7 @@ let interaction = () => {
       let l_event = {
         date: {
           year: parseInt($('.event-add-year', 0, that.parentNode).value),
-          month: parseInt($('.event-add-month', 0, that.parentNode).value),
+          month: parseInt($('.event-add-month', 0, that.parentNode).value) - 1,
           day: parseInt($('.event-add-day', 0, that.parentNode).value),
           hour: parseInt($('.event-add-hour', 0, that.parentNode).value)
         },
@@ -695,8 +696,10 @@ let getEvents = () => {
       http.onreadystatechange = function () {
         if (http.readyState === 4 && http.status === 200) {
           let l_state = store().get('state');
-          l_state.events = JSON.parse(http.response);
-          store().change('state', l_state);
+          if (JSON.parse(http.response)[0] !== 'offline') {
+            l_state.events = JSON.parse(http.response);
+            store().change('state', l_state);
+          }
         }
       };
       http.open('GET', api_url + localStorage.getItem('api_endpoint_id'), true);
@@ -731,9 +734,11 @@ let syncEvents = state => {
 let sharedMode = () => {
   if (location.hash.length === 25) {
     let l_hash = location.hash.substring(1, location.hash.length);
-    localStorage.setItem('normal_api_endpoint_id', localStorage.getItem('api_endpoint_id'));
+    api_endpoint_id = l_hash;
+    normal_api_endpoint_id = localStorage.getItem('api_endpoint_id');
+    localStorage.setItem('normal_api_endpoint_id', normal_api_endpoint_id);
     localStorage.setItem('api_endpoint_id', l_hash);
-    console.log(localStorage.getItem('api_endpoint_id'), localStorage.getItem('normal_api_endpoint_id'));
+    console.log(l_hash, normal_api_endpoint_id);
   } else if (localStorage.getItem('normal_api_endpoint_id')) {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
     localStorage.removeItem('normal_api_endpoint_id');

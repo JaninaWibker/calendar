@@ -107,7 +107,7 @@ let components = {
             <div class="message-text">year:</div>
             <input class="message-input event-add-year" type="number" placeholder="Set year..." value={state.date.year}></input>
             <div class="message-text">month:</div>
-            <input class="message-input event-add-month" type="number" placeholder="Set month..." value={state.date.month}></input>
+            <input class="message-input event-add-month" type="number" placeholder="Set month..." value={state.date.month + 1}></input>
             <div class="message-text">day:</div>
             <input class="message-input event-add-day" type="number" placeholder="Set day..." value={state.date.day}></input>
             <div class="message-text">hour:</div>
@@ -372,7 +372,7 @@ let interaction = () => {
       let l_event = {
         date: {
           year: parseInt($('.event-add-year', 0, that.parentNode).value),
-          month: parseInt($('.event-add-month', 0, that.parentNode).value),
+          month: parseInt($('.event-add-month', 0, that.parentNode).value) - 1,
           day: parseInt($('.event-add-day', 0, that.parentNode).value),
           hour: parseInt($('.event-add-hour', 0, that.parentNode).value),
         },
@@ -453,8 +453,10 @@ let getEvents = () => {
       http.onreadystatechange = function() {
         if (http.readyState === 4 && http.status === 200) {
           let l_state = store().get('state')
-          l_state.events = JSON.parse(http.response)
-          store().change('state', l_state)
+          if(JSON.parse(http.response)[0] !== 'offline'){
+            l_state.events = JSON.parse(http.response)
+            store().change('state', l_state)
+          }
         }
       };
       http.open('GET', api_url + localStorage.getItem('api_endpoint_id'), true)

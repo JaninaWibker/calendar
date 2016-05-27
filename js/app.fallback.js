@@ -36,68 +36,15 @@ var components = {
     } else if (state.view === 2) {
       curr = state.date.month + 1 + "." + state.date.year;
     }
-    return kalista().dom(
-      'div',
-      { 'class': 'header' },
-      kalista().dom(
-        'div',
-        { 'class': 'header-menu-icon', onclick: 'interaction().toggleNav(\'state\')' },
-        kalista().dom(
-          'i',
-          { 'class': 'material-icons' },
-          'menu'
-        )
-      ),
-      kalista().dom(
-        'div',
-        { 'class': 'header-section' },
-        curr + " | " + state.nav.content[state.view]
-      )
-    );
+    return kalista().dom('div', { 'class': 'header' }, kalista().dom('div', { 'class': 'header-menu-icon', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'menu')), kalista().dom('div', { 'class': 'header-section' }, curr + " | " + state.nav.content[state.view]));
   },
   nav_tree: function nav_tree(state) {
-    return kalista().dom(
-      'div',
-      { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') },
-      kalista().dom(
-        'div',
-        { 'class': 'nav' },
-        kalista().dom(
-          'div',
-          { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' },
-          kalista().dom(
-            'i',
-            { 'class': 'material-icons' },
-            'close'
-          )
-        ),
-        kalista().dom('div', { 'class': 'nav-header-img' }),
-        kalista().dom(
-          'div',
-          { 'class': 'nav-header-title' },
-          state.nav.title
-        ),
-        components.navItems_tree(state),
-        kalista().dom(
-          'div',
-          { 'class': 'nav-button-share', onclick: 'interaction().share()' },
-          kalista().dom(
-            'i',
-            { 'class': 'material-icons' },
-            'share'
-          )
-        )
-      )
-    );
+    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-button-share', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share'))));
   },
   navItems_tree: function navItems_tree(state) {
     var children = [];
     for (var i = 0; i < state.nav.content.length; i++) {
-      children.push(kalista().dom(
-        'div',
-        { 'class': 'nav-item', onclick: 'interaction().changeView(this)' },
-        state.nav.content[i]
-      ));
+      children.push(kalista().dom('div', { 'class': 'nav-item', onclick: 'interaction().changeView(this)' }, state.nav.content[i]));
     }
     return { 'tag': 'div', 'prop': { 'class': 'nav-items' }, 'children': children };
   },
@@ -110,103 +57,19 @@ var components = {
     } else if (state.view === 2) {
       view = components.month_tree(state);
     }
-    return kalista().dom(
-      'div',
-      { 'class': 'main' },
-      components.day_tree(state),
-      components.week_tree(state),
-      components.month_tree(state)
-    );
+    return kalista().dom('div', { 'class': 'main' }, components.day_tree(state), components.week_tree(state), components.month_tree(state));
   },
   message: function message(state) {
     if (state.message === 'share') {
-      return kalista().dom(
-        'div',
-        { 'class': 'bg-dim' },
-        kalista().dom(
-          'div',
-          { 'class': 'message-box' },
-          kalista().dom(
-            'div',
-            { 'class': 'message-text' },
-            'copy this link:'
-          ),
-          kalista().dom('br', null),
-          kalista().dom(
-            'div',
-            { 'class': 'message-link' },
-            base_url + '#' + localStorage.getItem('api_endpoint_id')
-          ),
-          kalista().dom(
-            'div',
-            { 'class': 'message-button message-button-full', onclick: 'interaction().closeMessage()' },
-            'Done'
-          )
-        )
-      );
+      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'copy this link:'), kalista().dom('br', null), kalista().dom('div', { 'class': 'message-link' }, base_url + '#' + localStorage.getItem('api_endpoint_id')), kalista().dom('div', { 'class': 'message-button message-button-full', onclick: 'interaction().closeMessage()' }, 'Done')));
     } else if (state.message === 'add') {
-      return kalista().dom(
-        'div',
-        { 'class': 'bg-dim' },
-        kalista().dom(
-          'div',
-          { 'class': 'message-box' },
-          kalista().dom(
-            'div',
-            { 'class': 'message-text' },
-            'name:'
-          ),
-          kalista().dom('input', { 'class': 'message-input event-add-name', type: 'text', placeholder: 'Set name...' }),
-          kalista().dom(
-            'div',
-            { 'class': 'message-text' },
-            'year:'
-          ),
-          kalista().dom('input', { 'class': 'message-input event-add-year', type: 'number', placeholder: 'Set year...', value: state.date.year }),
-          kalista().dom(
-            'div',
-            { 'class': 'message-text' },
-            'month:'
-          ),
-          kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month }),
-          kalista().dom(
-            'div',
-            { 'class': 'message-text' },
-            'day:'
-          ),
-          kalista().dom('input', { 'class': 'message-input event-add-day', type: 'number', placeholder: 'Set day...', value: state.date.day }),
-          kalista().dom(
-            'div',
-            { 'class': 'message-text' },
-            'hour:'
-          ),
-          kalista().dom('input', { 'class': 'message-input event-add-hour', type: 'number', placeholder: 'Set hour...' }),
-          kalista().dom(
-            'div',
-            { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' },
-            'Cancel'
-          ),
-          kalista().dom(
-            'div',
-            { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this)' },
-            'Save'
-          )
-        )
-      );
+      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'name:'), kalista().dom('input', { 'class': 'message-input event-add-name', type: 'text', placeholder: 'Set name...' }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-add-year', type: 'number', placeholder: 'Set year...', value: state.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-add-day', type: 'number', placeholder: 'Set day...', value: state.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-add-hour', type: 'number', placeholder: 'Set hour...' }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this)' }, 'Save')));
     } else {
       return kalista().dom('div', null);
     }
   },
   main_tree: function main_tree(state) {
-    return kalista().dom(
-      'div',
-      null,
-      components.header_tree(state),
-      components.nav_tree(state),
-      components.view_tree(state),
-      components.buttons(),
-      components.message(state)
-    );
+    return kalista().dom('div', null, components.header_tree(state), components.nav_tree(state), components.view_tree(state), components.buttons(), components.message(state));
   },
   day_tree: function day_tree(state) {
     var evt = events(state, state.date),
@@ -224,21 +87,7 @@ var components = {
       if (i === 24) {
         _i = 0;
       }
-      children.push(kalista().dom(
-        'div',
-        { 'class': 'day-container' },
-        kalista().dom(
-          'div',
-          { 'class': 'day-time' },
-          _i,
-          ':00'
-        ),
-        kalista().dom(
-          'div',
-          { 'class': 'day-event', event: _event },
-          _title
-        )
-      ));
+      children.push(kalista().dom('div', { 'class': 'day-container' }, kalista().dom('div', { 'class': 'day-time' }, _i, ':00'), kalista().dom('div', { 'class': 'day-event', event: _event }, _title)));
     }
     return { 'tag': 'div', 'prop': { 'class': 'day-view ', 'hide': state.view === 0 || state.view === 3 ? false : true }, 'children': children };
   },
@@ -259,139 +108,11 @@ var components = {
       var title = [];
       var evt = events(state, { 'year': dates[i].getFullYear(), 'month': dates[i].getMonth(), 'day': dates[i].getDate() });
       for (var e = 0; e < evt.length; e++) {
-        title.push(kalista().dom(
-          'div',
-          { 'class': 'event-badge' },
-          evt[e].title
-        ));
+        title.push(kalista().dom('div', { 'class': 'event-badge' }, evt[e].title));
       }
       titles.push({ 'tag': 'div', 'children': title });
     }
-    return kalista().dom(
-      'div',
-      { 'class': "week-view ", hide: state.view === 1 ? false : true },
-      kalista().dom(
-        'table',
-        null,
-        kalista().dom(
-          'tr',
-          null,
-          kalista().dom(
-            'th',
-            null,
-            'M'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'T'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'W'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'T'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'F'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'S'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'S'
-          )
-        ),
-        kalista().dom(
-          'tr',
-          { 'class': 'isWeek' },
-          kalista().dom(
-            'td',
-            { is_today: isToday[0], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[0].getDate() + "." + (dates[0].getMonth() + 1)
-          ),
-          kalista().dom(
-            'td',
-            { is_today: isToday[1], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[1].getDate() + "." + (dates[1].getMonth() + 1)
-          ),
-          kalista().dom(
-            'td',
-            { is_today: isToday[2], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[2].getDate() + "." + (dates[2].getMonth() + 1)
-          ),
-          kalista().dom(
-            'td',
-            { is_today: isToday[3], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[3].getDate() + "." + (dates[3].getMonth() + 1)
-          ),
-          kalista().dom(
-            'td',
-            { is_today: isToday[4], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[4].getDate() + "." + (dates[4].getMonth() + 1)
-          ),
-          kalista().dom(
-            'td',
-            { is_today: isToday[5], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[5].getDate() + "." + (dates[5].getMonth() + 1)
-          ),
-          kalista().dom(
-            'td',
-            { is_today: isToday[6], week_date: true, onclick: 'interaction().viewDay(this)' },
-            dates[6].getDate() + "." + (dates[6].getMonth() + 1)
-          )
-        ),
-        kalista().dom(
-          'tr',
-          null,
-          kalista().dom(
-            'td',
-            { event: titles[0] ? true : false },
-            titles[0]
-          ),
-          kalista().dom(
-            'td',
-            { event: titles[1] ? true : false },
-            titles[1]
-          ),
-          kalista().dom(
-            'td',
-            { event: titles[2] ? true : false },
-            titles[2]
-          ),
-          kalista().dom(
-            'td',
-            { event: titles[3] ? true : false },
-            titles[3]
-          ),
-          kalista().dom(
-            'td',
-            { event: titles[4] ? true : false },
-            titles[4]
-          ),
-          kalista().dom(
-            'td',
-            { event: titles[5] ? true : false },
-            titles[5]
-          ),
-          kalista().dom(
-            'td',
-            { event: titles[6] ? true : false },
-            titles[6]
-          )
-        )
-      )
-    );
+    return kalista().dom('div', { 'class': "week-view ", hide: state.view === 1 ? false : true }, kalista().dom('table', null, kalista().dom('tr', null, kalista().dom('th', null, 'M'), kalista().dom('th', null, 'T'), kalista().dom('th', null, 'W'), kalista().dom('th', null, 'T'), kalista().dom('th', null, 'F'), kalista().dom('th', null, 'S'), kalista().dom('th', null, 'S')), kalista().dom('tr', { 'class': 'isWeek' }, kalista().dom('td', { is_today: isToday[0], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[0].getDate() + "." + (dates[0].getMonth() + 1)), kalista().dom('td', { is_today: isToday[1], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[1].getDate() + "." + (dates[1].getMonth() + 1)), kalista().dom('td', { is_today: isToday[2], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[2].getDate() + "." + (dates[2].getMonth() + 1)), kalista().dom('td', { is_today: isToday[3], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[3].getDate() + "." + (dates[3].getMonth() + 1)), kalista().dom('td', { is_today: isToday[4], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[4].getDate() + "." + (dates[4].getMonth() + 1)), kalista().dom('td', { is_today: isToday[5], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[5].getDate() + "." + (dates[5].getMonth() + 1)), kalista().dom('td', { is_today: isToday[6], week_date: true, onclick: 'interaction().viewDay(this)' }, dates[6].getDate() + "." + (dates[6].getMonth() + 1))), kalista().dom('tr', null, kalista().dom('td', { event: titles[0] ? true : false }, titles[0]), kalista().dom('td', { event: titles[1] ? true : false }, titles[1]), kalista().dom('td', { event: titles[2] ? true : false }, titles[2]), kalista().dom('td', { event: titles[3] ? true : false }, titles[3]), kalista().dom('td', { event: titles[4] ? true : false }, titles[4]), kalista().dom('td', { event: titles[5] ? true : false }, titles[5]), kalista().dom('td', { event: titles[6] ? true : false }, titles[6]))));
   },
   month_tree: function month_tree(state) {
     var weeks = getMonthData(state.date.year, state.date.month);
@@ -411,96 +132,15 @@ var components = {
         } else {
           isToday = false;
         }
-        children.push(kalista().dom(
-          'td',
-          { 'class': 'month-item', is_today: isToday, onclick: 'interaction().viewDay(this, ' + state.date.month + ')' },
-          l_data
-        ));
+        children.push(kalista().dom('td', { 'class': 'month-item', is_today: isToday, onclick: 'interaction().viewDay(this, ' + state.date.month + ')' }, l_data));
       }
       obj.push({ 'tag': 'tr', 'prop': { 'class': 'month-row' }, 'children': children });
     }
     var m_data = { 'tag': 'table', 'prop': { 'class': '' }, 'children': obj };
-    return kalista().dom(
-      'div',
-      { 'class': 'month-view', hide: state.view === 2 ? false : true },
-      kalista().dom(
-        'table',
-        null,
-        kalista().dom(
-          'tr',
-          null,
-          kalista().dom(
-            'th',
-            null,
-            'M'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'T'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'W'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'T'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'F'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'S'
-          ),
-          kalista().dom(
-            'th',
-            null,
-            'S'
-          )
-        )
-      ),
-      m_data
-    );
+    return kalista().dom('div', { 'class': 'month-view', hide: state.view === 2 ? false : true }, kalista().dom('table', null, kalista().dom('tr', null, kalista().dom('th', null, 'M'), kalista().dom('th', null, 'T'), kalista().dom('th', null, 'W'), kalista().dom('th', null, 'T'), kalista().dom('th', null, 'F'), kalista().dom('th', null, 'S'), kalista().dom('th', null, 'S'))), m_data);
   },
   buttons: function buttons(state) {
-    return kalista().dom(
-      'div',
-      { 'class': 'btn-container' },
-      kalista().dom(
-        'div',
-        { 'class': 'btn-previous btn-fab', onclick: 'interaction().previous()' },
-        kalista().dom(
-          'i',
-          { 'class': 'material-icons' },
-          'keyboard_arrow_left'
-        )
-      ),
-      kalista().dom(
-        'div',
-        { 'class': 'btn-next btn-fab', onclick: 'interaction().next()' },
-        kalista().dom(
-          'i',
-          { 'class': 'material-icons' },
-          'keyboard_arrow_right'
-        )
-      ),
-      kalista().dom(
-        'div',
-        { 'class': 'btn-add btn-fab', onclick: 'interaction().add({"date":{"year":2016,"month":4,"day":26,"hour":8},"title":"test event"})' },
-        kalista().dom(
-          'i',
-          { 'class': 'material-icons' },
-          'add'
-        )
-      )
-    );
+    return kalista().dom('div', { 'class': 'btn-container' }, kalista().dom('div', { 'class': 'btn-previous btn-fab', onclick: 'interaction().previous()' }, kalista().dom('i', { 'class': 'material-icons' }, 'keyboard_arrow_left')), kalista().dom('div', { 'class': 'btn-next btn-fab', onclick: 'interaction().next()' }, kalista().dom('i', { 'class': 'material-icons' }, 'keyboard_arrow_right')), kalista().dom('div', { 'class': 'btn-add btn-fab', onclick: 'interaction().add({"date":{"year":2016,"month":4,"day":26,"hour":8},"title":"test event"})' }, kalista().dom('i', { 'class': 'material-icons' }, 'add')));
   },
   add_screen: function add_screen(state) {
     var add_menu = kalista().dom('div', { 'class': 'add_menu' });
@@ -612,7 +252,7 @@ var interaction = function interaction() {
       var l_event = {
         date: {
           year: parseInt($('.event-add-year', 0, that.parentNode).value),
-          month: parseInt($('.event-add-month', 0, that.parentNode).value),
+          month: parseInt($('.event-add-month', 0, that.parentNode).value) - 1,
           day: parseInt($('.event-add-day', 0, that.parentNode).value),
           hour: parseInt($('.event-add-hour', 0, that.parentNode).value)
         },
@@ -697,8 +337,10 @@ var getEvents = function getEvents() {
       http.onreadystatechange = function () {
         if (http.readyState === 4 && http.status === 200) {
           var l_state = store().get('state');
-          l_state.events = JSON.parse(http.response);
-          store().change('state', l_state);
+          if (JSON.parse(http.response)[0] !== 'offline') {
+            l_state.events = JSON.parse(http.response);
+            store().change('state', l_state);
+          }
         }
       };
       http.open('GET', api_url + localStorage.getItem('api_endpoint_id'), true);
