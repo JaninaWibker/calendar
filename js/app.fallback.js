@@ -2,7 +2,7 @@
 'use strict';
 // let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
 
-var api_url = 'https://calendar-backend-gr30n3yzz.c9users.io';
+var api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/';
 var base_url = location.href;
 var api_endpoint_id = void 0,
     normal_api_endpoint_id = void 0;
