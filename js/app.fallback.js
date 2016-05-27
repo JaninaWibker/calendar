@@ -1,7 +1,8 @@
 /** @jsx kalista().dom */
 'use strict';
 
-var api_url = "https://calendar-backend-gr30n3yzz.c9users.io"; //'http://xyxyxy.duckdns.org:9123/api/'
+var api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+// let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io'
 var base_url = location.href;
 var api_endpoint_id = void 0,
     normal_api_endpoint_id = void 0;
@@ -39,7 +40,7 @@ var components = {
     return kalista().dom('div', { 'class': 'header' }, kalista().dom('div', { 'class': 'header-menu-icon', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'menu')), kalista().dom('div', { 'class': 'header-section' }, curr + " | " + state.nav.content[state.view]));
   },
   nav_tree: function nav_tree(state) {
-    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-button-share', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share'))));
+    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-bottom-buttons' }, kalista().dom('div', { 'class': 'nav-button-share', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share')), kalista().dom('div', { 'class': 'nav-button-sync', onclick: '' }, kalista().dom('i', { 'class': 'material-icons' }, 'sync')))));
   },
   navItems_tree: function navItems_tree(state) {
     var children = [];
@@ -60,10 +61,13 @@ var components = {
     return kalista().dom('div', { 'class': 'main' }, components.day_tree(state), components.week_tree(state), components.month_tree(state));
   },
   message: function message(state) {
-    if (state.message === 'share') {
+    if (typeof state.message === 'string' && state.message === 'share') {
       return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'copy this link:'), kalista().dom('br', null), kalista().dom('div', { 'class': 'message-link' }, base_url + '#' + localStorage.getItem('api_endpoint_id')), kalista().dom('div', { 'class': 'message-button message-button-full', onclick: 'interaction().closeMessage()' }, 'Done')));
-    } else if (state.message === 'add') {
+    } else if (typeof state.message === 'string' && state.message === 'add') {
       return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'name:'), kalista().dom('input', { 'class': 'message-input event-add-name', type: 'text', placeholder: 'Set name...' }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-add-year', type: 'number', placeholder: 'Set year...', value: state.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-add-month', type: 'number', placeholder: 'Set month...', value: state.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-add-day', type: 'number', placeholder: 'Set day...', value: state.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-add-hour', type: 'number', placeholder: 'Set hour...' }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this)' }, 'Save')));
+    } else if (typeof state.message === 'string' && state.message.indexOf('event') === 0) {
+      var l_id = state.message.substring(6, state.message.length);
+      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'title:'), kalista().dom('input', { 'class': 'message-input event-change-name', type: 'text', placeholder: 'Change title...' }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-change-year', type: 'text', placeholder: 'Change year...' }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-change-month', type: 'text', placeholder: 'Change month...' }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-change-day', type: 'text', placeholder: 'Change day...' }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-change-hour', type: 'text', placeholder: 'Change hour...' }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: '' }, 'Save')));
     } else {
       return kalista().dom('div', null);
     }
@@ -77,17 +81,19 @@ var components = {
     for (var i = 0; i < 24; i++) {
       var _i = i,
           _event = false,
-          _title = '';
+          _title = '',
+          _id = '';
       for (var e = 0; e < evt.length; e++) {
         if (i === evt[e].hour) {
           _event = true;
           _title = evt[e].title;
+          _id = evt[e].id;
         }
       }
       if (i === 24) {
         _i = 0;
       }
-      children.push(kalista().dom('div', { 'class': 'day-container' }, kalista().dom('div', { 'class': 'day-time' }, _i, ':00'), kalista().dom('div', { 'class': 'day-event', event: _event }, _title)));
+      children.push(kalista().dom('div', { 'class': 'day-container', onclick: _event && _id !== '' ? 'interaction().changeEvent("' + _id + '")' : '' }, kalista().dom('div', { 'class': 'day-time' }, _i, ':00'), kalista().dom('div', { 'class': 'day-event', event: _event }, _title)));
     }
     return { 'tag': 'div', 'prop': { 'class': 'day-view ', 'hide': state.view === 0 || state.view === 3 ? false : true }, 'children': children };
   },
@@ -256,7 +262,8 @@ var interaction = function interaction() {
           day: parseInt($('.event-add-day', 0, that.parentNode).value),
           hour: parseInt($('.event-add-hour', 0, that.parentNode).value)
         },
-        title: $('.event-add-name', 0, that.parentNode).value
+        title: $('.event-add-name', 0, that.parentNode).value,
+        id: gen_random()
       };
       l_state.events.push(l_event);
       syncEvents(l_state);
@@ -272,6 +279,11 @@ var interaction = function interaction() {
       var l_state = store().get('state');
       l_state.message = 0;
       store().change('state', l_state);
+    },
+    changeEvent: function changeEvent(id) {
+      var l_state = store().get('state');
+      l_state.message = 'event.' + id;
+      store().change('state', l_state);
     }
   };
 };
@@ -282,7 +294,8 @@ var events = function events(state, date) {
     if (date.year === date2.year && date.month === date2.month && date.day === date2.day) {
       _events.push({
         'hour': date2.hour,
-        'title': state.events[i].title
+        'title': state.events[i].title,
+        'id': state.events[i].id
       });
     }
   }
@@ -321,6 +334,8 @@ var getMonthData = function getMonthData(year, month) {
   }
   return weeks;
 };
+
+var getEventById = function getEventById(id) {};
 
 var sortEvents = function sortEvents() {
   var state = store().get('state');
@@ -384,6 +399,10 @@ var sharedMode = function sharedMode() {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
     localStorage.removeItem('normal_api_endpoint_id');
   }
+};
+
+var gen_random = function gen_random() {
+  return Math.random().toString(36).substring(2, 18);
 };
 
 var renderTrees = [];

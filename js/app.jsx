@@ -56,7 +56,10 @@ let components = {
           <div class="nav-header-img"></div>
           <div class="nav-header-title">{state.nav.title}</div>
           {components.navItems_tree(state)}
-          <div class="nav-button-share" onclick="interaction().share()"><i class="material-icons">share</i></div>
+          <div class="nav-bottom-buttons">
+            <div class="nav-button-share" onclick="interaction().share()"><i class="material-icons">share</i></div>
+            <div class="nav-button-sync" onclick=""><i class="material-icons">sync</i></div>
+          </div>
         </div>
       </div>
     )
@@ -88,7 +91,7 @@ let components = {
     )
   },
   message: (state) => {
-    if(state.message === 'share'){
+    if(typeof state.message === 'string' && state.message === 'share'){
       return (
         <div class="bg-dim">
           <div class="message-box">
@@ -99,7 +102,7 @@ let components = {
           </div>
         </div>
       )
-    } else if (state.message === 'add'){
+    } else if (typeof state.message === 'string' && state.message === 'add'){
       return (
         <div class="bg-dim">
           <div class="message-box">
@@ -115,6 +118,26 @@ let components = {
             <input class="message-input event-add-hour" type="number" placeholder="Set hour..."></input>
             <div class="message-button message-button-half btn-secondary" onclick="interaction().closeMessage()">Cancel</div>
             <div class="message-button message-button-half btn-primary" onclick="interaction().addEvent(this)">Save</div>
+          </div>
+        </div>
+      )
+    } else if(typeof state.message === 'string' && state.message.indexOf('event') === 0) {
+      let l_id = state.message.substring(6, state.message.length)
+      return (
+        <div class="bg-dim">
+          <div class="message-box">
+            <div class="message-text">title:</div>
+            <input class="message-input event-change-name" type="text" placeholder="Change title..."></input>
+            <div class="message-text">year:</div>
+            <input class="message-input event-change-year" type="text" placeholder="Change year..."></input>
+            <div class="message-text">month:</div>
+            <input class="message-input event-change-month" type="text" placeholder="Change month..."></input>
+            <div class="message-text">day:</div>
+            <input class="message-input event-change-day" type="text" placeholder="Change day..."></input>
+            <div class="message-text">hour:</div>
+            <input class="message-input event-change-hour" type="text" placeholder="Change hour..."></input>
+            <div class="message-button message-button-half btn-secondary" onclick="interaction().closeMessage()">Cancel</div>
+            <div class="message-button message-button-half btn-primary" onclick="">Save</div>
           </div>
         </div>
       )
@@ -136,17 +159,18 @@ let components = {
   day_tree: (state) => {
     let evt = events(state, state.date), children = []
     for(let i = 0; i < 24; i ++){
-      let _i = i, _event = false, _title = ''
+      let _i = i, _event = false, _title = '', _id =  ''
       for(let e = 0;e < evt.length;e++){
         if(i === evt[e].hour){
           _event = true
           _title = evt[e].title
+          _id = evt[e].id
         }
       }
       if(i === 24){
         _i = 0
       }
-      children.push(<div class="day-container"><div class="day-time">{_i}:00</div><div class="day-event" event={_event}>{_title}</div></div>)
+      children.push(<div class="day-container" onclick={_event && _id !== '' ? 'interaction().changeEvent("' + _id +'")' : ''}><div class="day-time">{_i}:00</div><div class="day-event" event={_event}>{_title}</div></div>)
     }
     return {'tag': 'div', 'prop': {'class': 'day-view ', 'hide': (state.view === 0 || state.view === 3) ? false : true}, 'children': children}
   },
@@ -377,7 +401,8 @@ let interaction = () => {
           day: parseInt($('.event-add-day', 0, that.parentNode).value),
           hour: parseInt($('.event-add-hour', 0, that.parentNode).value),
         },
-        title: $('.event-add-name', 0, that.parentNode).value
+        title: $('.event-add-name', 0, that.parentNode).value,
+        id: gen_random()
       }
       l_state.events.push(l_event)
       syncEvents(l_state)
@@ -393,6 +418,11 @@ let interaction = () => {
       let l_state = store().get('state')
       l_state.message = 0
       store().change('state', l_state)
+    },
+    changeEvent: (id) => {
+      let l_state = store().get('state')
+      l_state.message = 'event.' + id
+      store().change('state', l_state)
     }
   }
 }
@@ -403,7 +433,8 @@ let events = (state, date) => {
     if(date.year === date2.year && date.month === date2.month && date.day === date2.day){
       _events.push({
         'hour': date2.hour,
-        'title': state.events[i].title
+        'title': state.events[i].title,
+        'id': state.events[i].id
       })
     }
   }
@@ -437,6 +468,10 @@ let getMonthData = (year, month) => {
     }
   }
   return weeks
+}
+
+let getEventById = (id) => {
+
 }
 
 let sortEvents = () => {
@@ -502,6 +537,10 @@ let sharedMode = () => {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'))
     localStorage.removeItem('normal_api_endpoint_id')
   }
+}
+
+let gen_random = () => {
+  return Math.random().toString(36).substring(2,18)
 }
 
 let renderTrees = []

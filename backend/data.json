@@ -4,47 +4,24 @@
     "callback": []
   },
   "oxv7zj4mrbv3ro5dbol5zh0k": {
-    "data": [
-      {
-        "date": {
-          "year": 2016,
-          "month": 5,
-          "day": 27,
-          "hour": 12
-        },
-        "title": "blabla"
-      },
-      {
-        "date": {
-          "year": 2016,
-          "month": 4,
-          "day": 27,
-          "hour": 1
-        },
-        "title": "12"
-      }
-    ],
+    "data": [],
     "callback": []
   },
   "9acqg99gz15dna8b7rrsy8pv": {
+    "data": [],
+    "callback": []
+  },
+  "dssww70lyvw0zcvftitacerk": {
     "data": [
-      {
-        "date": {
-          "year": 2016,
-          "month": 5,
-          "day": 27,
-          "hour": 12
-        },
-        "title": "blabla"
-      },
       {
         "date": {
           "year": 2016,
           "month": 4,
           "day": 27,
-          "hour": 12
+          "hour": 4
         },
-        "title": ""
+        "title": "123",
+        "id": "puatrxpz2yaf3uau"
       }
     ],
     "callback": []

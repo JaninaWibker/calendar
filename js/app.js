@@ -1,7 +1,8 @@
 /** @jsx kalista().dom */
 'use strict';
 
-let api_url = "https://calendar-backend-gr30n3yzz.c9users.io"; //'http://xyxyxy.duckdns.org:9123/api/'
+let api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+// let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io'
 let base_url = location.href;
 let api_endpoint_id, normal_api_endpoint_id;
 let __date = new Date();
@@ -79,11 +80,24 @@ let components = {
         components.navItems_tree(state),
         kalista().dom(
           'div',
-          { 'class': 'nav-button-share', onclick: 'interaction().share()' },
+          { 'class': 'nav-bottom-buttons' },
           kalista().dom(
-            'i',
-            { 'class': 'material-icons' },
-            'share'
+            'div',
+            { 'class': 'nav-button-share', onclick: 'interaction().share()' },
+            kalista().dom(
+              'i',
+              { 'class': 'material-icons' },
+              'share'
+            )
+          ),
+          kalista().dom(
+            'div',
+            { 'class': 'nav-button-sync', onclick: '' },
+            kalista().dom(
+              'i',
+              { 'class': 'material-icons' },
+              'sync'
+            )
           )
         )
       )
@@ -118,7 +132,7 @@ let components = {
     );
   },
   message: state => {
-    if (state.message === 'share') {
+    if (typeof state.message === 'string' && state.message === 'share') {
       return kalista().dom(
         'div',
         { 'class': 'bg-dim' },
@@ -143,7 +157,7 @@ let components = {
           )
         )
       );
-    } else if (state.message === 'add') {
+    } else if (typeof state.message === 'string' && state.message === 'add') {
       return kalista().dom(
         'div',
         { 'class': 'bg-dim' },
@@ -192,6 +206,56 @@ let components = {
           )
         )
       );
+    } else if (typeof state.message === 'string' && state.message.indexOf('event') === 0) {
+      let l_id = state.message.substring(6, state.message.length);
+      return kalista().dom(
+        'div',
+        { 'class': 'bg-dim' },
+        kalista().dom(
+          'div',
+          { 'class': 'message-box' },
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'title:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-change-name', type: 'text', placeholder: 'Change title...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'year:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-change-year', type: 'text', placeholder: 'Change year...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'month:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-change-month', type: 'text', placeholder: 'Change month...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'day:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-change-day', type: 'text', placeholder: 'Change day...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-text' },
+            'hour:'
+          ),
+          kalista().dom('input', { 'class': 'message-input event-change-hour', type: 'text', placeholder: 'Change hour...' }),
+          kalista().dom(
+            'div',
+            { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' },
+            'Cancel'
+          ),
+          kalista().dom(
+            'div',
+            { 'class': 'message-button message-button-half btn-primary', onclick: '' },
+            'Save'
+          )
+        )
+      );
     } else {
       return kalista().dom('div', null);
     }
@@ -213,11 +277,13 @@ let components = {
     for (let i = 0; i < 24; i++) {
       let _i = i,
           _event = false,
-          _title = '';
+          _title = '',
+          _id = '';
       for (let e = 0; e < evt.length; e++) {
         if (i === evt[e].hour) {
           _event = true;
           _title = evt[e].title;
+          _id = evt[e].id;
         }
       }
       if (i === 24) {
@@ -225,7 +291,7 @@ let components = {
       }
       children.push(kalista().dom(
         'div',
-        { 'class': 'day-container' },
+        { 'class': 'day-container', onclick: _event && _id !== '' ? 'interaction().changeEvent("' + _id + '")' : '' },
         kalista().dom(
           'div',
           { 'class': 'day-time' },
@@ -615,7 +681,8 @@ let interaction = () => {
           day: parseInt($('.event-add-day', 0, that.parentNode).value),
           hour: parseInt($('.event-add-hour', 0, that.parentNode).value)
         },
-        title: $('.event-add-name', 0, that.parentNode).value
+        title: $('.event-add-name', 0, that.parentNode).value,
+        id: gen_random()
       };
       l_state.events.push(l_event);
       syncEvents(l_state);
@@ -631,6 +698,11 @@ let interaction = () => {
       let l_state = store().get('state');
       l_state.message = 0;
       store().change('state', l_state);
+    },
+    changeEvent: id => {
+      let l_state = store().get('state');
+      l_state.message = 'event.' + id;
+      store().change('state', l_state);
     }
   };
 };
@@ -641,7 +713,8 @@ let events = (state, date) => {
     if (date.year === date2.year && date.month === date2.month && date.day === date2.day) {
       _events.push({
         'hour': date2.hour,
-        'title': state.events[i].title
+        'title': state.events[i].title,
+        'id': state.events[i].id
       });
     }
   }
@@ -680,6 +753,8 @@ let getMonthData = (year, month) => {
   }
   return weeks;
 };
+
+let getEventById = id => {};
 
 let sortEvents = () => {
   let state = store().get('state');
@@ -743,6 +818,10 @@ let sharedMode = () => {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
     localStorage.removeItem('normal_api_endpoint_id');
   }
+};
+
+let gen_random = () => {
+  return Math.random().toString(36).substring(2, 18);
 };
 
 let renderTrees = [];
