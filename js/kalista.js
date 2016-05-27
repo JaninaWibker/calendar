@@ -159,6 +159,9 @@ let kalista = () => {
         return temp
       }
     }
+  },
+  version: () => {
+    return 'kalista.js v1.0'
   }
   }
 }
