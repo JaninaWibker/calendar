@@ -1,8 +1,8 @@
 /** @jsx kalista().dom */
 'use strict';
-// let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
 
-let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/';
+let api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+// let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/'
 let base_url = location.href;
 let api_endpoint_id, normal_api_endpoint_id;
 let __date = new Date();
@@ -83,7 +83,7 @@ let components = {
           { 'class': 'nav-bottom-buttons' },
           kalista().dom(
             'div',
-            { 'class': 'nav-button-share', onclick: 'interaction().share()' },
+            { 'class': 'nav-button', onclick: 'interaction().share()' },
             kalista().dom(
               'i',
               { 'class': 'material-icons' },
@@ -92,7 +92,7 @@ let components = {
           ),
           kalista().dom(
             'div',
-            { 'class': 'nav-button-sync', onclick: '' },
+            { 'class': 'nav-button', onclick: 'syncEvents(store().get(\'state\'))' },
             kalista().dom(
               'i',
               { 'class': 'material-icons' },
@@ -797,6 +797,7 @@ let syncEvents = state => {
   http.onreadystatechange = function () {
     if (http.readyState === 4 && http.status === 200) {
       state.events = JSON.parse(http.responseText);
+      showToast('synchronized', 500);
       store().change('state', state);
       sortEvents();
     }
@@ -818,6 +819,16 @@ let sharedMode = () => {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
     localStorage.removeItem('normal_api_endpoint_id');
   }
+};
+
+let showToast = (toast, duration) => {
+  let l_el = document.createElement('div');
+  l_el.classList.add('toast');
+  l_el.innerText = toast;
+  renderTarget.appendChild(l_el);
+  setTimeout(() => {
+    renderTarget.removeChild(l_el);
+  }, duration);
 };
 
 let gen_random = () => {

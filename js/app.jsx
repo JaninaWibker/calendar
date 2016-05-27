@@ -1,7 +1,7 @@
 /** @jsx kalista().dom */
 'use strict'
-// let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
-let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/'
+let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
+// let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/'
 let base_url = location.href
 let api_endpoint_id, normal_api_endpoint_id
 let __date = new Date()
@@ -57,8 +57,8 @@ let components = {
           <div class="nav-header-title">{state.nav.title}</div>
           {components.navItems_tree(state)}
           <div class="nav-bottom-buttons">
-            <div class="nav-button-share" onclick="interaction().share()"><i class="material-icons">share</i></div>
-            <div class="nav-button-sync" onclick=""><i class="material-icons">sync</i></div>
+            <div class="nav-button" onclick="interaction().share()"><i class="material-icons">share</i></div>
+            <div class="nav-button" onclick="syncEvents(store().get('state'))"><i class="material-icons">sync</i></div>
           </div>
         </div>
       </div>
@@ -515,6 +515,7 @@ let syncEvents = (state) => {
   http.onreadystatechange = function() {
     if(http.readyState === 4 && http.status === 200){
       state.events = JSON.parse(http.responseText)
+      showToast('synchronized', 700)
       store().change('state', state)
       sortEvents()
     }
@@ -537,6 +538,16 @@ let sharedMode = () => {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'))
     localStorage.removeItem('normal_api_endpoint_id')
   }
+}
+
+let showToast = (toast, duration) => {
+  let l_el = document.createElement('div')
+  l_el.classList.add('toast')
+  l_el.innerText = toast
+  renderTarget.appendChild(l_el)
+  setTimeout(() => {
+    renderTarget.removeChild(l_el)
+  }, duration)
 }
 
 let gen_random = () => {

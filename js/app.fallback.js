@@ -1,8 +1,8 @@
 /** @jsx kalista().dom */
 'use strict';
-// let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
 
-var api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/';
+var api_url = 'http://xyxyxy.duckdns.org:9123/api/';
+// let api_url = 'https://calendar-backend-gr30n3yzz.c9users.io/api/'
 var base_url = location.href;
 var api_endpoint_id = void 0,
     normal_api_endpoint_id = void 0;
@@ -40,7 +40,7 @@ var components = {
     return kalista().dom('div', { 'class': 'header' }, kalista().dom('div', { 'class': 'header-menu-icon', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'menu')), kalista().dom('div', { 'class': 'header-section' }, curr + " | " + state.nav.content[state.view]));
   },
   nav_tree: function nav_tree(state) {
-    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-bottom-buttons' }, kalista().dom('div', { 'class': 'nav-button-share', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share')), kalista().dom('div', { 'class': 'nav-button-sync', onclick: '' }, kalista().dom('i', { 'class': 'material-icons' }, 'sync')))));
+    return kalista().dom('div', { 'class': "nav-container " + (state.nav.open ? '' : 'hidden') }, kalista().dom('div', { 'class': 'nav' }, kalista().dom('div', { 'class': 'nav-close', onclick: 'interaction().toggleNav(\'state\')' }, kalista().dom('i', { 'class': 'material-icons' }, 'close')), kalista().dom('div', { 'class': 'nav-header-img' }), kalista().dom('div', { 'class': 'nav-header-title' }, state.nav.title), components.navItems_tree(state), kalista().dom('div', { 'class': 'nav-bottom-buttons' }, kalista().dom('div', { 'class': 'nav-button', onclick: 'interaction().share()' }, kalista().dom('i', { 'class': 'material-icons' }, 'share')), kalista().dom('div', { 'class': 'nav-button', onclick: 'syncEvents(store().get(\'state\'))' }, kalista().dom('i', { 'class': 'material-icons' }, 'sync')))));
   },
   navItems_tree: function navItems_tree(state) {
     var children = [];
@@ -378,6 +378,7 @@ var syncEvents = function syncEvents(state) {
   http.onreadystatechange = function () {
     if (http.readyState === 4 && http.status === 200) {
       state.events = JSON.parse(http.responseText);
+      showToast('synchronized', 500);
       store().change('state', state);
       sortEvents();
     }
@@ -399,6 +400,16 @@ var sharedMode = function sharedMode() {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
     localStorage.removeItem('normal_api_endpoint_id');
   }
+};
+
+var showToast = function showToast(toast, duration) {
+  var l_el = document.createElement('div');
+  l_el.classList.add('toast');
+  l_el.innerText = toast;
+  renderTarget.appendChild(l_el);
+  setTimeout(function () {
+    renderTarget.removeChild(l_el);
+  }, duration);
 };
 
 var gen_random = function gen_random() {
