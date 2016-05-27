@@ -88,8 +88,10 @@ body {
   width: 100%;
   z-index: 2;
   height: 48px;
-  background-image: url("../img/menu-title.jpeg");
+  /*background-color: black;*/
+  background: linear-gradient(rgba(136, 14, 79, 0.4), rgba(136, 14, 79, 0.4)), url("../img/menu-title.jpeg");
   background-size: cover;
+
 }
 
 .nav-header-title {

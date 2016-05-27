@@ -33,6 +33,7 @@ let setData = (request, reply) => {
 let newId = (request, reply) => {
 	let l_id = Math.random().toString(36).substring(2,26)
 	store().create(l_id, [])
+	console.log(l_id, 'GET', 'NEW ID')
 	reply(l_id)
 }
 
@@ -90,7 +91,7 @@ let read = () =>{
 }
 
 let write = () => {
-	fs.writeFile(path, JSON.stringify(_stores), function(err){
+	fs.writeFile(path, JSON.stringify(_stores, null, 2), function(err){
 		if (err) throw err;
 	})
 }

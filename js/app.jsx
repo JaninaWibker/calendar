@@ -2,6 +2,7 @@
 'use strict'
 let api_url = 'http://xyxyxy.duckdns.org:9123/api/'
 let base_url = location.href
+let api_endpoint_id, normal_api_endpoint_id
 let __date = new Date()
 store().create('state', {
   view: 0,
@@ -489,9 +490,11 @@ let syncEvents = (state) => {
 let sharedMode = () => {
   if(location.hash.length === 25){
     let l_hash = location.hash.substring(1, location.hash.length)
-    localStorage.setItem('normal_api_endpoint_id', localStorage.getItem('api_endpoint_id'))
+    api_endpoint_id = l_hash
+    normal_api_endpoint_id = localStorage.getItem('api_endpoint_id')
+    localStorage.setItem('normal_api_endpoint_id', normal_api_endpoint_id)
     localStorage.setItem('api_endpoint_id', l_hash)
-    console.log(localStorage.getItem('api_endpoint_id'), localStorage.getItem('normal_api_endpoint_id'))
+    console.log(l_hash, normal_api_endpoint_id)
   } else if(localStorage.getItem('normal_api_endpoint_id')){
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'))
     localStorage.removeItem('normal_api_endpoint_id')

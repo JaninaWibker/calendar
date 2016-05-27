@@ -3,6 +3,8 @@
 
 var api_url = 'http://xyxyxy.duckdns.org:9123/api/';
 var base_url = location.href;
+var api_endpoint_id = void 0,
+    normal_api_endpoint_id = void 0;
 var __date = new Date();
 store().create('state', {
   view: 0,
@@ -731,9 +733,11 @@ var syncEvents = function syncEvents(state) {
 var sharedMode = function sharedMode() {
   if (location.hash.length === 25) {
     var l_hash = location.hash.substring(1, location.hash.length);
-    localStorage.setItem('normal_api_endpoint_id', localStorage.getItem('api_endpoint_id'));
+    api_endpoint_id = l_hash;
+    normal_api_endpoint_id = localStorage.getItem('api_endpoint_id');
+    localStorage.setItem('normal_api_endpoint_id', normal_api_endpoint_id);
     localStorage.setItem('api_endpoint_id', l_hash);
-    console.log(localStorage.getItem('api_endpoint_id'), localStorage.getItem('normal_api_endpoint_id'));
+    console.log(l_hash, normal_api_endpoint_id);
   } else if (localStorage.getItem('normal_api_endpoint_id')) {
     localStorage.setItem('api_endpoint_id', localStorage.getItem('normal_api_endpoint_id'));
     localStorage.removeItem('normal_api_endpoint_id');
