@@ -1,14 +1,28 @@
 {
-  "name": "jsx-webapp-boilerplate",
+  "name": "calendar",
   "version": "1.0.0",
-  "description": ""
+  "description": "calendar web app using jsx",
+  "main": "index.js",
+  "dependencies": {
+    "babel-cli": "^6.8.0",
+    "babel-plugin-transform-react-jsx": "^6.8.0",
+    "calendar": "^0.1.0",
+    "local-links": "^1.4.0",
+    "sw-toolbox": "^3.1.1"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "babel-cli": "^6.9.0",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.5.0"
-  }
-
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JannikWibker/calendar.git"
+  },
+  "author": "Jannik Wibker",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/JannikWibker/calendar/issues"
+  },
+  "homepage": "https://github.com/JannikWibker/calendar#readme"
 }
