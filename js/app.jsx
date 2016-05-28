@@ -137,6 +137,7 @@ let components = {
             <input class="message-input event-set-day" type="text" placeholder="Change day..." value={l_event.date.day}></input>
             <div class="message-text">hour:</div>
             <input class="message-input event-set-hour" type="text" placeholder="Change hour..." value={l_event.date.hour}></input>
+            <div class="message-button-fab btn-primary" onclick={'removeEvent("' + l_id + '")'}><i class="material-icons">delete</i></div>
             <div class="message-button message-button-half btn-secondary" onclick="interaction().closeMessage()">Cancel</div>
             <div class="message-button message-button-half btn-primary" onclick={'interaction().addEvent(this, "' + l_id + '")'}>Save</div>
           </div>
@@ -405,11 +406,12 @@ let interaction = () => {
         title: $('.event-set-name', 0, that.parentNode).value,
         id: id
       }
-      if(getEventById(id)){ l_state.events[getEventById(id).i] = l_event
+      if(getEventById(id)){
+      l_state.events[getEventById(id).i] = l_event
+      } else {
+        l_state.events.push(l_event)
+      }
       syncEvents(l_state, false)
-    } else {
-      l_state.events.push(l_event)
-    }
       interaction().closeMessage()
     },
     share: () => {
@@ -517,6 +519,15 @@ let getEvents = () => {
       http.send()
     }
   }
+}
+
+let removeEvent = (id) => {
+  let l_state = store().get('state')
+  for(let i=0;i < l_state.events.length;i++){
+    if(l_state.events[i].id === id) l_state.events.splice(i, 1)
+  }
+  interaction().closeMessage()
+  syncEvents(l_state, false)
 }
 
 let syncEvents = (state, toast) => {

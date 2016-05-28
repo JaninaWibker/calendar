@@ -86,16 +86,16 @@ var kalista = function kalista() {
             for (var _i4 = 0; _i4 < keys(a.prop).length; _i4++) {
               if (keys(b.prop)[_i4] == undefined) {
                 // console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', a.__id__)
-                el.querySelector('[kalista-dataid="' + a.__id__ + '"]').removeAttribute(keys(a.prop)[_i4]);
+                $('[kalista-dataid="' + a.__id__ + '"]', 0, el).removeAttribute(keys(a.prop)[_i4]);
               } else if (a.prop[keys(a.prop)[_i4]] !== b.prop[keys(a.prop)[_i4]] || keys(a.prop)[_i4] !== keys(b.prop)[_i4]) {
                 // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
-                el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i4], key(b.prop, _i4));
+                $('[kalista-dataid="' + a.__id__ + '"]', 0, el).setAttribute(keys(b.prop)[_i4], key(b.prop, _i4));
               }
             }
           } else if (keys(a.prop).length < keys(b.prop).length) {
             for (var _i5 = 0; _i5 < keys(b.prop).length - keys(a.prop).length; _i5++) {
               // console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', a.__id__)
-              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i5 + keys(a.prop).length], key(b.prop, _i5 + keys(a.prop).length));
+              $('[kalista-dataid="' + a.__id__ + '"]', 0, el).setAttribute(keys(b.prop)[_i5 + keys(a.prop).length], key(b.prop, _i5 + keys(a.prop).length));
             }
           }
           same = false;
@@ -103,7 +103,7 @@ var kalista = function kalista() {
           for (var _i6 = 0; _i6 < keys(a.prop).length; _i6++) {
             if (a.prop[keys(a.prop)[_i6]] !== b.prop[keys(a.prop)[_i6]] || keys(a.prop)[_i6] !== keys(a.prop)[_i6]) {
               // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
-              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i6], key(b.prop, _i6));
+              $('[kalista-dataid="' + a.__id__ + '"]', 0, el).setAttribute(keys(b.prop)[_i6], key(b.prop, _i6));
               same = false;
             }
           }
@@ -127,7 +127,7 @@ var kalista = function kalista() {
                 }
               } else {
                 // console.log('remove child node at ' + a.children[i].__id__ , a.children[i])
-                el.querySelector('[kalista-dataid="' + a.children[_i8].__id__ + '"]').remove();
+                $('[kalista-dataid="' + a.children[_i8].__id__ + '"]', 0, el).remove();
               }
             }
           } else if (b.children.length > a.children.length) {
@@ -140,7 +140,7 @@ var kalista = function kalista() {
                 }
               } else {
                 // console.log('add child node at ' + b.__id__ , b.children[i])
-                el.querySelector('[kalista-dataid="' + kalista().id(b.children[_i9].__id__).getParent() + '"]').appendChild(kalista().render(b.children[_i9]));
+                $('[kalista-dataid="' + kalista().id(b.children[_i9].__id__).getParent() + '"]', 0, el).appendChild(kalista().render(b.children[_i9]));
               }
             }
           }
@@ -151,7 +151,7 @@ var kalista = function kalista() {
       }
       if (a.tag === '__text__' && b.tag === '__text__') {
         if (a.text !== b.text) {
-          temp_selector = el.querySelector('[kalista-dataid="' + kalista().id(a.__id__).getParent() + '"]');
+          temp_selector = $('[kalista-dataid="' + kalista().id(a.__id__).getParent() + '"]', 0, el);
           temp_selector.firstChild.remove();
           temp_selector.appendChild(document.createTextNode(b.text));
           // console.log('change "' + a.text + '" to "' + b.text + '" at ' + a.__id__)

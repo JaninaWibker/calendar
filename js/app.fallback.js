@@ -68,7 +68,7 @@ var components = {
     } else if (typeof state.message === 'string' && state.message.indexOf('event') === 0) {
       var l_id = state.message.substring(6, state.message.length);
       var l_event = getEventById(l_id).event;
-      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'title:'), kalista().dom('input', { 'class': 'message-input event-set-name', type: 'text', placeholder: 'Change title...', value: l_event.title }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-set-year', type: 'text', placeholder: 'Change year...', value: l_event.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-set-month', type: 'text', placeholder: 'Change month...', value: l_event.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-set-day', type: 'text', placeholder: 'Change day...', value: l_event.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-set-hour', type: 'text', placeholder: 'Change hour...', value: l_event.date.hour }), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this, "' + l_id + '")' }, 'Save')));
+      return kalista().dom('div', { 'class': 'bg-dim' }, kalista().dom('div', { 'class': 'message-box' }, kalista().dom('div', { 'class': 'message-text' }, 'title:'), kalista().dom('input', { 'class': 'message-input event-set-name', type: 'text', placeholder: 'Change title...', value: l_event.title }), kalista().dom('div', { 'class': 'message-text' }, 'year:'), kalista().dom('input', { 'class': 'message-input event-set-year', type: 'text', placeholder: 'Change year...', value: l_event.date.year }), kalista().dom('div', { 'class': 'message-text' }, 'month:'), kalista().dom('input', { 'class': 'message-input event-set-month', type: 'text', placeholder: 'Change month...', value: l_event.date.month + 1 }), kalista().dom('div', { 'class': 'message-text' }, 'day:'), kalista().dom('input', { 'class': 'message-input event-set-day', type: 'text', placeholder: 'Change day...', value: l_event.date.day }), kalista().dom('div', { 'class': 'message-text' }, 'hour:'), kalista().dom('input', { 'class': 'message-input event-set-hour', type: 'text', placeholder: 'Change hour...', value: l_event.date.hour }), kalista().dom('div', { 'class': 'message-button-fab btn-primary', onclick: 'removeEvent("' + l_id + '")' }, kalista().dom('i', { 'class': 'material-icons' }, 'delete')), kalista().dom('div', { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' }, 'Cancel'), kalista().dom('div', { 'class': 'message-button message-button-half btn-primary', onclick: 'interaction().addEvent(this, "' + l_id + '")' }, 'Save')));
     } else {
       return kalista().dom('div', null);
     }
@@ -270,10 +270,10 @@ var interaction = function interaction() {
       };
       if (getEventById(id)) {
         l_state.events[getEventById(id).i] = l_event;
-        syncEvents(l_state, false);
       } else {
         l_state.events.push(l_event);
       }
+      syncEvents(l_state, false);
       interaction().closeMessage();
     },
     share: function share() {
@@ -385,6 +385,15 @@ var getEvents = function getEvents() {
       http.send();
     }
   }
+};
+
+var removeEvent = function removeEvent(id) {
+  var l_state = store().get('state');
+  for (var i = 0; i < l_state.events.length; i++) {
+    if (l_state.events[i].id === id) l_state.events.splice(i, 1);
+  }
+  interaction().closeMessage();
+  syncEvents(l_state, false);
 };
 
 var syncEvents = function syncEvents(state, toast) {

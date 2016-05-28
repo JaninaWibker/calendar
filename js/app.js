@@ -247,6 +247,15 @@ let components = {
           kalista().dom('input', { 'class': 'message-input event-set-hour', type: 'text', placeholder: 'Change hour...', value: l_event.date.hour }),
           kalista().dom(
             'div',
+            { 'class': 'message-button-fab btn-primary', onclick: 'removeEvent("' + l_id + '")' },
+            kalista().dom(
+              'i',
+              { 'class': 'material-icons' },
+              'delete'
+            )
+          ),
+          kalista().dom(
+            'div',
             { 'class': 'message-button message-button-half btn-secondary', onclick: 'interaction().closeMessage()' },
             'Cancel'
           ),
@@ -687,10 +696,10 @@ let interaction = () => {
       };
       if (getEventById(id)) {
         l_state.events[getEventById(id).i] = l_event;
-        syncEvents(l_state, false);
       } else {
         l_state.events.push(l_event);
       }
+      syncEvents(l_state, false);
       interaction().closeMessage();
     },
     share: () => {
@@ -802,6 +811,15 @@ let getEvents = () => {
       http.send();
     }
   }
+};
+
+let removeEvent = id => {
+  let l_state = store().get('state');
+  for (let i = 0; i < l_state.events.length; i++) {
+    if (l_state.events[i].id === id) l_state.events.splice(i, 1);
+  }
+  interaction().closeMessage();
+  syncEvents(l_state, false);
 };
 
 let syncEvents = (state, toast) => {
