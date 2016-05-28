@@ -19,14 +19,14 @@ let getData = (request, reply) => {
 
 let setData = (request, reply) => {
 	let l_id = encodeURIComponent(request.params.id)
-	console.log(request.payload.key)
 	console.log(l_id, 'POST')
 	if(store().get(l_id)){
 		store().change(l_id, JSON.parse(request.payload.key))
 		console.log(_stores)
 		reply(store().get(l_id))
 	} else {
-		reply('[]')
+		store().create(l_id, JSON.parse(request.payload.key))
+		reply(store().get(l_id))
 	}
 }
 
