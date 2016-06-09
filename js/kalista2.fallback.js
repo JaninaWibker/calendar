@@ -4,7 +4,6 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 
 var kalista = function kalista() {
   return {
-    version: 'kalista 1.3',
     gen_id: function gen_id(obj_tree, path, i) {
       if (!path) {
         path = '';
@@ -31,9 +30,6 @@ var kalista = function kalista() {
         c++;
         obj.prop = prop;
       }
-      if (typeof tag === 'function') {
-        obj = tag.call(this, obj.prop);
-      }
       for (var _i = c; _i < arguments.length; _i++) {
         if (_typeof(arguments[_i]) === 'object') {
           obj.children[_i - c] = arguments[_i];
@@ -44,21 +40,10 @@ var kalista = function kalista() {
       return obj;
     },
     render: function render(tree) {
-      var el = void 0;
-      if (_typeof(tree.tag) === 'object') {
-        el = kalista().render(tree.tag);
-      } else if (typeof tree.tag === 'function') {
-        el = kalista().render(kalista().gen_id(tree.tag.call(undefined, tree.prop), kalista().id(tree.__id__).getParent(), kalista().id(tree.__id__).getIdInParent()));
-      } else {
-        el = document.createElement(tree.tag);
-      }
+      var el = document.createElement(tree.tag);
       if (tree.prop) {
         for (var _i2 = 0; _i2 < Object.keys(tree.prop).length; _i2++) {
-          if (tree.prop.hideAttr) {
-            if (tree.prop.hideAttr.split(' ').indexOf(Object.keys(tree.prop)[_i2]) !== -1 || tree.prop.hideAttr === '*') {}
-          } else {
-            el.setAttribute(Object.keys(tree.prop)[_i2], tree.prop[Object.keys(tree.prop)[_i2]]);
-          }
+          el.setAttribute(Object.keys(tree.prop)[_i2], tree.prop[Object.keys(tree.prop)[_i2]]);
         }
       }
       el.setAttribute('kalista-dataid', tree.__id__);
@@ -76,7 +61,7 @@ var kalista = function kalista() {
       }
       return el;
     },
-    diff: function diff(obj1, obj2, el) {
+    diff: function diff(obj1, obj2, el, path, n) {
       var a = obj1,
           b = obj2;
       if (!Array.isArray(a.children)) {
@@ -95,47 +80,37 @@ var kalista = function kalista() {
           temp_result = void 0,
           temp_selector = void 0;
       if (a.tag === b.tag) {
-        if (typeof a.tag === 'function' && typeof b.tag === 'function' && a.tag.call(undefined, a.prop) !== b.tag.call(undefined, b.prop)) {
-          var temp_a = kalista().gen_id(a.tag.call(undefined, a.prop), kalista().id(a.__id__).getParent(), kalista().id(a.__id__).getIdInParent());
-          var temp_b = kalista().gen_id(b.tag.call(undefined, b.prop), kalista().id(b.__id__).getParent(), kalista().id(b.__id__).getIdInParent());
-          b = kalista().diff(temp_a, temp_b, el).newRenderTree;
-        }
-        if (_typeof(a.tag) === 'object' && _typeof(b.tag) === 'object') {
-          kalista().diff(kalista().gen_id(a.tag, kalista().id(a.__id__).getParent()), kalista().gen_id(b.tag, kalista().id(b.__id__).getParent()), el);
-        }
-        if (keys(a.prop).length !== keys(b.prop).length || willChange && keys(a.prop).length !== keys(b.prop).length) {
-          // console.log('uneven amount of properties')
-          console.log(willChange);
+        if (keys(a.prop).length !== keys(b.prop).length) {
+          // console.log('uneven amount of properties', path)
           if (keys(a.prop).length > keys(b.prop).length) {
             for (var _i4 = 0; _i4 < keys(a.prop).length; _i4++) {
               if (keys(b.prop)[_i4] == undefined) {
                 // console.log('remove "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '"', a.__id__)
-                el.querySelector('[kalista-dataid="' + a.__id__ + '"]').removeAttribute(keys(a.prop)[_i4]);
+                $('[kalista-dataid="' + a.__id__ + '"]', 0, el).removeAttribute(keys(a.prop)[_i4]);
               } else if (a.prop[keys(a.prop)[_i4]] !== b.prop[keys(a.prop)[_i4]] || keys(a.prop)[_i4] !== keys(b.prop)[_i4]) {
                 // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
-                el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i4], key(b.prop, _i4));
+                $('[kalista-dataid="' + a.__id__ + '"]', 0, el).setAttribute(keys(b.prop)[_i4], key(b.prop, _i4));
               }
             }
           } else if (keys(a.prop).length < keys(b.prop).length) {
             for (var _i5 = 0; _i5 < keys(b.prop).length - keys(a.prop).length; _i5++) {
               // console.log('add "' + keys(b.prop)[i+keys(a.prop).length] + ': ' + key(b.prop, i+keys(a.prop).length) + '"', a.__id__)
-              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i5 + keys(a.prop).length], key(b.prop, _i5 + keys(a.prop).length));
+              $('[kalista-dataid="' + a.__id__ + '"]', 0, el).setAttribute(keys(b.prop)[_i5 + keys(a.prop).length], key(b.prop, _i5 + keys(a.prop).length));
             }
           }
           same = false;
-        } else if (willChange || keys(a.prop).length === keys(b.prop).length) {
-          //console.log(willChange)
+        } else {
           for (var _i6 = 0; _i6 < keys(a.prop).length; _i6++) {
             if (a.prop[keys(a.prop)[_i6]] !== b.prop[keys(a.prop)[_i6]] || keys(a.prop)[_i6] !== keys(a.prop)[_i6]) {
               // console.log('change "' + keys(a.prop)[i] + ': ' + key(a.prop, i) + '" to "' + keys(b.prop)[i] + ': ' + key(b.prop, i) + '"', a.__id__)
-              el.querySelector('[kalista-dataid="' + a.__id__ + '"]').setAttribute(keys(b.prop)[_i6], key(b.prop, _i6));
+              $('[kalista-dataid="' + a.__id__ + '"]', 0, el).setAttribute(keys(b.prop)[_i6], key(b.prop, _i6));
               same = false;
             }
           }
         }
         if (a.children.length === b.children.length) {
           for (var _i7 = 0; _i7 < a.children.length; _i7++) {
-            temp_result = kalista().diff(a.children[_i7], b.children[_i7], el);
+            temp_result = kalista().diff(a.children[_i7], b.children[_i7], el, path, _i7);
             if (!temp_result.isSame) {
               same = false;
               b.children[_i7] = temp_result.newRenderTree;
@@ -145,38 +120,38 @@ var kalista = function kalista() {
           if (a.children.length > b.children.length) {
             for (var _i8 = 0; _i8 < a.children.length; _i8++) {
               if (b.children[_i8]) {
-                temp_result = kalista().diff(a.children[_i8], b.children[_i8], el);
+                temp_result = kalista().diff(a.children[_i8], b.children[_i8], el, path, _i8);
                 if (!temp_result.isSame) {
                   same = false;
                   b.children[_i8] = temp_result.newRenderTree;
                 }
               } else {
                 // console.log('remove child node at ' + a.children[i].__id__ , a.children[i])
-                el.querySelector('[kalista-dataid="' + a.children[_i8].__id__ + '"]').remove();
+                $('[kalista-dataid="' + a.children[_i8].__id__ + '"]', 0, el).remove();
               }
             }
           } else if (b.children.length > a.children.length) {
             for (var _i9 = 0; _i9 < b.children.length; _i9++) {
               if (a.children[_i9]) {
-                temp_result = kalista().diff(a.children[_i9], b.children[_i9], el);
+                temp_result = kalista().diff(a.children[_i9], b.children[_i9], el, path, _i9);
                 if (!temp_result.isSame) {
                   same = false;
                   b.children[_i9] = temp_result.newRenderTree;
                 }
               } else {
                 // console.log('add child node at ' + b.__id__ , b.children[i])
-                el.querySelector('[kalista-dataid="' + kalista().id(b.children[_i9].__id__).getParent() + '"]').appendChild(kalista().render(b.children[_i9]));
+                $('[kalista-dataid="' + kalista().id(b.children[_i9].__id__).getParent() + '"]', 0, el).appendChild(kalista().render(b.children[_i9]));
               }
             }
           }
         }
       } else {
-        // console.log('wrong tag: "' + a.tag + '" and "' + b.tag + '"')
+        // console.log('wrong tag: "' + a.tag + '" and "' + b.tag + '"', path)
         same = false;
       }
       if (a.tag === '__text__' && b.tag === '__text__') {
         if (a.text !== b.text) {
-          temp_selector = el.querySelector('[kalista-dataid="' + kalista().id(a.__id__).getParent() + '"]');
+          temp_selector = $('[kalista-dataid="' + kalista().id(a.__id__).getParent() + '"]', 0, el);
           temp_selector.firstChild.remove();
           temp_selector.appendChild(document.createTextNode(b.text));
           // console.log('change "' + a.text + '" to "' + b.text + '" at ' + a.__id__)
@@ -198,11 +173,11 @@ var kalista = function kalista() {
             temp = temp.substring(0, temp.lastIndexOf('.'));
           }
           return temp;
-        },
-        getIdInParent: function getIdInParent() {
-          return _id.substring(_id.lastIndexOf('.') + 1, _id.length);
         }
       };
+    },
+    version: function version() {
+      return 'kalista.js v1.0';
     }
   };
 };
@@ -229,49 +204,6 @@ var store = function store() {
       return _stores[name].data;
     }
   };
-};
-
-var route = function route() {
-  var hash = location.hash.substr(1);
-  if (!hash.startsWith('/')) hash = "/" + hash;
-  location.hash = hash;
-  window.addEventListener('hashchange', function (evt) {
-    hash = location.hash.substr(1);
-    if (!hash.startsWith('/')) hash = "/" + hash;
-    location.hash = hash;
-  });
-  var matches = function matches(route) {
-    return new RegExp("^" + route.split("*").join(".*[^/]") + "$").test(hash);
-  };
-  var set = function set(route) {
-    hash = route.startsWith('/') ? route : '/' + route;
-    location.hash = hash;
-  };
-  return {
-    matches: matches,
-    set: set,
-    hash: hash
-  };
-};
-
-var setup = function setup(target, store_name, shell) {
-  var old_tree = void 0,
-      new_tree = void 0;
-  var render = function render(state) {
-    new_tree = kalista().gen_id(App(state));
-    target.replaceChild(kalista().render(new_tree), target.firstChild);
-  };
-
-  var diff = function diff(state) {
-    old_tree = new_tree;
-    new_tree = kalista().diff(old_tree, kalista().gen_id(App(state)), target).newRenderTree;
-  };
-
-  shell.remove();
-  render(store().get(store_name));
-
-  store().subscribe(store_name, diff);
-  return { diff: diff, render: render, old_tree: old_tree, new_tree: new_tree };
 };
 
 var $ = function $(query, i) {
