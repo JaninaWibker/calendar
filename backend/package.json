@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js"
   },
-  "author": "Jannik Wibker",
+  "author": "Janina Wibker",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.1",

@@ -17,12 +17,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/JannikWibker/calendar.git"
+    "url": "git+https://github.com/JaninaWibker/calendar.git"
   },
-  "author": "Jannik Wibker",
+  "author": "Janina Wibker",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/JannikWibker/calendar/issues"
+    "url": "https://github.com/JaninaWibker/calendar/issues"
   },
-  "homepage": "https://github.com/JannikWibker/calendar#readme"
+  "homepage": "https://github.com/JaninaWibker/calendar#readme"
 }
